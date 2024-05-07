@@ -1,0 +1,327 @@
+@font-face {
+    font-family: "Celias";
+    src: url('../fonts/Celias.otf');
+}
+
+@media (max-width: 991px) {
+    .presentation-section {
+        padding: 50px;
+        height: 50vh !important;
+    }
+
+    .section{
+        flex-direction: column;
+    }
+
+    .column img{
+        transform: scaleY(-1) rotate(-25deg);
+    }
+
+    #navbarSupportedContent ul{
+        position: absolute;
+        background: #35A7FF;
+        left: 0;
+        height: 100vh;
+    }
+
+    .nav-login{
+        justify-content: center;
+    }
+
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    background: #38618C;
+    font-family: 'Celias';
+}
+
+nav{
+    background: #38618C;
+    /* border: 1px solid pink; */
+}
+
+#navbarSupportedContent ul{
+    /* border: 1px solid pink; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.nav-item{
+    /* border: 1px solid red; */
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.link{
+    text-decoration: none;
+    color: white;
+}
+
+.nav-login{
+    /* border: 1px solid green; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+/* .login-item{   
+    border: 1px solid rgb(225, 0, 255);
+} */
+
+.login-item span {
+    /* border: 1px solid rgb(225, 0, 255); */
+    padding: 5px;
+    color: white;
+}
+
+.login-item button{   
+    border: 2px solid #FF5964;
+    background: none;
+    color: white;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-radius: 50px;
+}
+
+.presentation-section{
+    /* border: 1px solid red; */
+    width: 100vw;
+    height: calc(100vh - 15vh);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.principal-button{
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-radius: 50px;
+    border: none;
+
+    background: #FF5964;
+    color: white;
+}
+
+h1{
+    font-size: clamp(30px,6vh,80px);
+    font-weight: bolder;
+}
+
+h2{
+    width: 100%;
+    padding-bottom: 20px; 
+    text-align: left;
+    font-size: 28px;
+    font-weight: bolder;
+    color: #35A7FF;
+}
+
+h3{
+    width: 100%;
+    text-align: left;
+    font-size: 22px;
+    font-weight: bolder;
+}
+
+.highlight{
+    color: #35A7FF;
+}
+
+.section{
+    /* border: 1px solid red; */
+    width: 100vw;
+    padding: 70px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-group{
+    /* border: 1px solid blue; */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.paragraph{
+    padding: 20px;
+}
+
+.example-element{
+    width: 400px;
+    height: 400px;
+    background: coral;
+}
+
+.footer-container{
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 190px;
+    background: #35A7FF;
+    /* border-top-left-radius: 25px;
+    border-top-right-radius: 25px; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.column{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* border: 1px solid greenyellow; */
+}
+
+form {
+    width: 100%;
+    min-width: 500px;
+    padding: 35px;
+    background: white;
+    border-radius: 5px;
+}
+
+.label{
+    color: #38618C;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.form-section{
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+}
+
+.input-element{
+    /* border: 1px solid blue; */
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.stylized-input{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 3px solid #35A7FF;
+    padding: 10px;
+}
+
+.form-input{
+    border: 1px solid #B7B7B7;
+    border-radius: 5px;
+    padding: 10px;
+    min-height: 150px;
+    max-height: 150px;
+}
+
+.form-btn{
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding-left: 35px;
+    padding-right: 35px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #35A7FF;
+}
+
+.moving-arrows{
+    /* border: 1px solid red; */
+    position: absolute;
+    width: 40px;
+    animation: 2s infinite slideout ease-in-out;
+}
+
+@keyframes slideout {
+    0% {
+      margin-top: 170px;
+    }
+  
+    50% {
+        margin-top: 300px;
+    }
+
+    100% {
+        margin-top: 170px;
+    }
+}
+
+.login-section{
+    /* border: 1px solid red; */
+    width: 100vw;
+    padding: 20px;
+    background: #35A7FF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-group{
+    /* border: 1px solid red; */
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form{
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 75px;
+}
+
+.login-form h2{
+    color: #38618C;
+    font-size: 38px;
+    text-align: center;
+}
+
+.login-form p{
+    padding: 10px;
+    color: #38618C;
+    text-align: center;
+}
+
+.form-element{
+    /* border: 1px solid red; */
+    width: 60%;
+    min-width: 250px;
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+}
+
+
+
+
+

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<style>
+
+</style>
+
+<div class="presentation-section">
+    <h1 style="text-shadow: 0px 0px 10px #1e1e1e93;"><span class="highlight">Trade</span>, <span class="highlight">consult</span>, and <span class="highlight">thrive</span> in the blink of an eye !</h1>
+    <p>Exchange swiftly, monitor your investments, </br>
+    and take control of your financial future with ease. </p>
+    <a href="{{asset('login')}}">
+        <button class="principal-button">
+            Start Now
+        </button>
+    </a>
+</div>
+<div class="section">
+    <div class="section-group">
+        <div class="example-element">
+            <img src="{{asset('img/img-presentation.png')}}" class="example-element"/>
+        </div>
+    </div>
+    <div class="section-group">
+        <p class="paragraph">
+            Welcome to Bitchest, where simplicity meets power. 
+            Our platform is designed to be effortlessly accessible, 
+            intuitively simple, and remarkably clear. 
+            Whether you're a seasoned trader or new to the world of cryptocurrency, 
+            our user-friendly interface ensures a seamless experience for all. 
+            With straightforward navigation and transparent 
+            processes, managing your assets has never been easier. 
+            Say goodbye to complexity and hello to clarity 
+            – with Bitchest, your financial journey starts with simplicity.</p>
+    </div>
+</div>
+{% endblock %}
