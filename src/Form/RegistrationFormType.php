@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -11,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class RegistrationFormType extends AbstractType
 {
@@ -40,6 +42,23 @@ class RegistrationFormType extends AbstractType
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
+                    ]),
+                ],
+            ])
+            ->add('confirmPassword', PasswordType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new CallBack([
+                        'callback' => function($confirmPassword, ExecutionContextInterface $context) {
+                            $form = $context->getRoot();
+                            $plainPassword = $form->get('plainPassword')->getData();
+
+                            if ($confirmPassword !== $plainPassword) {
+                                $context->buildViolation('Passwords do not match')
+                                    ->atPath('confirmPassword')
+                                    ->addViolation();
+                            }
+                        },
                     ]),
                 ],
             ])
