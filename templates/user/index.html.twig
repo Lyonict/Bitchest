@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="connected-interface d-flex" style="height: 100vh;">
+  <div class="submenu col-2">
+    <!-- Left column content -->
+    <table class="w-100">
+      <tr class="submenu-item">
+        <td class="submenu-link p-3">
+          <img class="menu-icon" src="{{asset('img/home.svg')}}">
+          <a href="{{asset('')}}"><span> Hub</span></a>
+        </td>
+      </tr>
+      <tr class="submenu-item">
+        <td class="submenu-link p-3">
+          <img class="menu-icon" src="{{asset('img/account.svg')}}">
+          <a href="{{asset('')}}"><span> Account</span></a>
+        </td>
+      </tr>
+      <tr class="submenu-item">
+        <td class="submenu-link p-3">
+          <img class="menu-icon" src="{{asset('img/wallet.svg')}}"> 
+          <a href="{{asset('')}}"><span> Wallet</span></a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="right-column bg-light col-10">
+    <!-- Right column content -->
+    <div class="bento-box-1">
+      Activity <span class="vertical-divider"></span>
+    </div>
+  </div>
+  </div>
+</div>
+</div>
+</div>
+
+{% endblock %}
