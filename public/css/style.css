@@ -12351,8 +12351,10 @@ h3, .h3 {
 }
 
 .submenu-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   background-color: #35A7FF;
-  color: white;
 }
 
 .submenu-item:hover {
@@ -12360,8 +12362,8 @@ h3, .h3 {
 }
 
 .submenu-link {
-  display: flex;
-  align-items: center;
+  text-decoration: none;
+  color: white;
 }
 
 .menu-icon {
