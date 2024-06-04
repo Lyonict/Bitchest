@@ -1,4 +1,5 @@
 @import "./bootstrap-bitchest.scss";
+@import "./form.scss";
 
 @font-face {
   font-family: "Celias";
@@ -194,72 +195,6 @@ h3 {
   /* border: 1px solid greenyellow; */
 }
 
-/* form {
-    width: 100%;
-    min-width: 500px;
-    padding: 35px;
-    background: white;
-    border-radius: 5px;
-} */
-
-.auth-form {
-  background-color: white;
-  max-width: 500px;
-  width: 100%;
-  border-radius: 5px;
-  @extend .p-5;
-  @extend .mx-auto;
-}
-
-.label {
-  color: #38618c;
-  padding-bottom: 10px;
-  padding-top: 10px;
-}
-
-.form-section {
-  /* border: 1px solid red; */
-  display: flex;
-  flex-direction: row;
-  text-align: left;
-}
-
-.input-element {
-  /* border: 1px solid blue; */
-  width: 100%;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.stylized-input {
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: 3px solid #35a7ff;
-  padding: 10px;
-}
-
-.form-input {
-  border: 1px solid #b7b7b7;
-  border-radius: 5px;
-  padding: 10px;
-  min-height: 150px;
-  max-height: 150px;
-}
-
-.form-btn {
-  margin: 10px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  padding-left: 35px;
-  padding-right: 35px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  background: #35a7ff;
-}
-
 .moving-arrows {
   /* border: 1px solid red; */
   position: absolute;
@@ -279,54 +214,4 @@ h3 {
   100% {
     margin-top: 170px;
   }
-}
-
-.login-section {
-  /* border: 1px solid red; */
-  width: 100vw;
-  padding: 20px;
-  background: #35a7ff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-group {
-  /* border: 1px solid red; */
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-form {
-  /* border: 1px solid red; */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 75px;
-}
-
-.login-form h2 {
-  color: #38618c;
-  font-size: 38px;
-  text-align: center;
-}
-
-.login-form p {
-  padding: 10px;
-  color: #38618c;
-  text-align: center;
-}
-
-.form-element {
-  /* border: 1px solid red; */
-  width: 60%;
-  min-width: 250px;
-  display: flex;
-  flex-direction: row;
-  text-align: left;
 }
