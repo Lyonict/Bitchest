@@ -1,5 +1,4 @@
 .login-section {
-  /* border: 1px solid red; */
   width: 100vw;
   padding: 20px;
   background: #35a7ff;
@@ -10,7 +9,6 @@
 }
 
 .login-group {
-  /* border: 1px solid red; */
   width: 50%;
   display: flex;
   flex-direction: column;
@@ -19,7 +17,6 @@
 }
 
 .login-form {
-  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,21 +37,12 @@
 }
 
 .form-element {
-  /* border: 1px solid red; */
   width: 60%;
   min-width: 250px;
   display: flex;
   flex-direction: row;
   text-align: left;
 }
-
-/* form {
-    width: 100%;
-    min-width: 500px;
-    padding: 35px;
-    background: white;
-    border-radius: 5px;
-} */
 
 .auth-form {
   background-color: white;
@@ -72,14 +60,12 @@
 }
 
 .form-section {
-  /* border: 1px solid red; */
   display: flex;
   flex-direction: row;
   text-align: left;
 }
 
 .input-element {
-  /* border: 1px solid blue; */
   width: 100%;
   padding: 10px;
   display: flex;
