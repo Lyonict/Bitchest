@@ -12064,7 +12064,6 @@ body {
 }
 
 .presentation-section {
-  width: 100vw;
   height: 85vh;
   color: white;
   display: flex;
@@ -12111,7 +12110,6 @@ h3, .h3 {
 }
 
 .section {
-  width: 100vw;
   padding: 70px;
   color: white;
   display: flex;
