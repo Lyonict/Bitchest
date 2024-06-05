@@ -1,0 +1,8 @@
+.auth-form {
+  background-color: white;
+  max-width: 500px;
+  width: 100%;
+  border-radius: 5px;
+  @extend .p-5;
+  @extend .mx-auto;
+}
