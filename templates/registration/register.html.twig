@@ -4,21 +4,59 @@
 {% endblock %}
 
 {% block content %}
-	<h1>Register</h1>
+  <div class="auth-form">
+  	<h3 class="mb-3">Register</h3>
 
-	{{ form_errors(registrationForm) }}
+    {% if app.user %}
+      <div class="mb-3">
+        <p>
+          You are logged in as {{ app.user.userIdentifier }}
+        </p>
+        <a href="{{ path('app_logout') }}">Logout</a>
+      </div>
 
-	{{ form_start(registrationForm) }}
-	{{ form_row(registrationForm.email) }}
-	{{ form_row(registrationForm.plainPassword, {
-    label: 'Password'
-  }) }}
-	{{ form_row(registrationForm.confirmPassword) }}
-	{{ form_row(registrationForm.agreeTerms) }}
+    {% else %}
 
-	<button type="submit" class="btn">Register</button>
-	<p>Already registered ?
-		<a href="{{path('app_login')}}">Login</a>
-	</p>
-	{{ form_end(registrationForm) }}
+      {{ form_errors(registrationForm) }}
+
+      {{ form_start(registrationForm) }}
+        <div class="mb-3">
+          {{ form_row(registrationForm.email) }}
+        </div>
+        <div class="mb-3">
+          {{ form_label(registrationForm.plainPassword, 'Password') }}
+          {{ form_widget(registrationForm.plainPassword) }}
+          {% if registrationForm.plainPassword.vars.errors|length > 0 %}
+            <ul class="bitchest-form-error-list">
+              {% for error in registrationForm.plainPassword.vars.errors %}
+                <li class="invalid-feedback">{{ error.message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+        <div class="mb-3">
+          {{ form_label(registrationForm.confirmPassword, 'Confirm password') }}
+          {{ form_widget(registrationForm.confirmPassword) }}
+          {% if registrationForm.confirmPassword.vars.errors|length > 0 %}
+            <ul class="bitchest-form-error-list">
+              {% for error in registrationForm.confirmPassword.vars.errors %}
+                <li class="invalid-feedback">{{ error.message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+        <div class="mb-3 form-check">
+          {{ form_row(registrationForm.agreeTerms) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+
+        <div class="mt-4">
+          <p>Already registered ?
+            <a href="{{path('app_login')}}">Login</a>
+          </p>
+        </div>
+      {{ form_end(registrationForm) }}
+    {% endif %}
+  </div>
 {% endblock %}

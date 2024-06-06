@@ -11971,6 +11971,13 @@ textarea.form-control-lg {
   width: 100%;
   border-radius: 5px;
 }
+.auth-form .bitchest-form-error-list {
+  list-style: none;
+  padding-left: 0;
+}
+.auth-form .bitchest-form-error-list .invalid-feedback {
+  display: block;
+}
 
 .bitchest-navbar {
   background-color: #38618c;
@@ -11994,7 +12001,21 @@ textarea.form-control-lg {
   font-family: "Celias";
   src: url("../fonts/Celias.otf");
 }
-
+@media (max-width: 991px) {
+  .presentation-section {
+    padding: 50px;
+    height: 50vh !important;
+  }
+  .section {
+    flex-direction: column;
+  }
+  .column img {
+    transform: scaleY(-1) rotate(-25deg);
+  }
+  .nav-login {
+    justify-content: center;
+  }
+}
 * {
   box-sizing: border-box;
 }

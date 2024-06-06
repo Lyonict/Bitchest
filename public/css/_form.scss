@@ -5,4 +5,14 @@
   border-radius: 5px;
   @extend .p-5;
   @extend .mx-auto;
+
+  .bitchest-form-error-list {
+    list-style: none;
+    padding-left: 0;
+    .invalid-feedback {
+      // We use the bootstrap class, but by default it only display after bootstrap validation
+      // Since it would only display after symfony form validation anyway, we overide it
+      display: block;
+    }
+  }
 }
