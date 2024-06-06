@@ -1,27 +1,23 @@
-<nav class="navbar navbar-expand-lg">
+<nav class="bitchest-navbar navbar navbar-expand-md" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/"><img src="{{asset('img/bitchest_logo.png')}}" style="width:150px;"></a>
+    <a class="navbar-brand" href="/"><img src="{{asset('img/bitchest_logo.png')}}" alt="Logo Bitchest"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a class="link" aria-current="page" href="/">Home</a>
+          <a class="nav-link" aria-current="page" href="/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="link" href="{{asset('contact')}}">Contact</a>
+          <a class="nav-link" href="{{asset('contact')}}">Contact</a>
         </li>
-        <li class="nav-login">
-          <div class="login-item">
-            {% if app.user %}
-              {# TODO : Create profile page and redirect the user to this page with this link #}
-              <a href="#" class="btn btn-outline-light rounded-pill px-4">Profile</a>
-            {% else %}
-              <a href="{{asset('login')}}"><button>Start Now</button></a>
-            {% endif %}
-          </div>
-        </li>
+      </ul>
+        {% if app.user %}
+          <a href="#" class="btn btn-outline-light rounded-pill px-4">Profile</a>
+        {% else %}
+          <a class="btn btn-primary rounded-pill px-4" href="{{asset('login')}}">Start&nbsp;Now</a>
+        {% endif %}
     </div>
   </div>
 </nav>

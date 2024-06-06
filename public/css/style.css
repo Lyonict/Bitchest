@@ -11972,49 +11972,12 @@ textarea.form-control-lg {
   border-radius: 5px;
 }
 
-nav {
-  background: #38618c;
-}
-
-#navbarSupportedContent ul {
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.nav-item {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.link {
-  text-decoration: none;
+.bitchest-navbar {
+  background-color: #38618c;
   color: white;
 }
-
-.nav-login {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: right;
-}
-
-.login-item span {
-  padding: 5px;
-  color: white;
-}
-
-.login-item button {
-  border: 2px solid #ff5964;
-  background: none;
-  color: white;
-  padding-bottom: 8px;
-  padding-top: 8px;
-  padding-left: 30px;
-  padding-right: 30px;
-  border-radius: 50px;
+.bitchest-navbar .navbar-brand img {
+  max-width: 150px;
 }
 
 .footer-container {
@@ -12031,27 +11994,7 @@ nav {
   font-family: "Celias";
   src: url("../fonts/Celias.otf");
 }
-@media (max-width: 991px) {
-  .presentation-section {
-    padding: 50px;
-    height: 50vh !important;
-  }
-  .section {
-    flex-direction: column;
-  }
-  .column img {
-    transform: scaleY(-1) rotate(-25deg);
-  }
-  #navbarSupportedContent ul {
-    position: absolute;
-    background: #35a7ff;
-    left: 0;
-    height: 100vh;
-  }
-  .nav-login {
-    justify-content: center;
-  }
-}
+
 * {
   box-sizing: border-box;
 }
@@ -12064,7 +12007,6 @@ body {
 }
 
 .presentation-section {
-  width: 100vw;
   height: 85vh;
   color: white;
   display: flex;
@@ -12111,7 +12053,6 @@ h3, .h3 {
 }
 
 .section {
-  width: 100vw;
   padding: 70px;
   color: white;
   display: flex;
