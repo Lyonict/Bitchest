@@ -9,12 +9,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/user', name: 'app_user')]
+    #[Route('/user', name: 'user')]
     public function index(UserRepository $repository): Response
     {
         $users = $repository->findAll();
 
-        return $this->render('test/test.html.twig', [
+        return $this->render('user/user.html.twig', [
             "users" => $users,
         ]);
     }

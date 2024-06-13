@@ -14,7 +14,7 @@
         </li>
       </ul>
         {% if app.user %}
-          <a href="#" class="btn btn-outline-light rounded-pill px-4">Profile</a>
+          <a href="{{asset('user')}}" class="btn btn-outline-light rounded-pill px-4">Profile</a>
         {% else %}
           <a class="btn btn-primary rounded-pill px-4" href="{{asset('login')}}">Start&nbsp;Now</a>
         {% endif %}
