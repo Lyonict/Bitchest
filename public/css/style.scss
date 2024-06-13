@@ -189,4 +189,16 @@ h3 {
   margin: 0 20px;
 }
 
+.tradingview-widget-container {
+  min-height: 550px; /* Ajustez cette valeur selon vos besoins */
+  width: 100%;
+  position: relative;
+}
+.tradingview-widget-container > div {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 

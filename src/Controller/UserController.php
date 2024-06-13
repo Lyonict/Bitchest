@@ -18,4 +18,12 @@ class UserController extends AbstractController
             "users" => $users,
         ]);
     }
+
+    #[Route('/user/wallet', name: 'wallet')]
+    public function show(UserRepository $repository): Response
+    {
+        return $this->render('user/wallet.html.twig', [
+        ]);
+    }
 }
+
