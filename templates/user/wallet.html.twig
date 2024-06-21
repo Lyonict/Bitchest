@@ -10,7 +10,7 @@
       <tr>
         <td class="submenu-item p-3">
           <img class="menu-icon" src="{{asset('img/home.svg')}}">
-          <a class="submenu-link" href="{{asset('')}}"><span> Hub</span></a>
+          <a class="submenu-link" href="{{asset('user')}}"><span> Hub</span></a>
         </td>
       </tr>
       <tr>
@@ -22,7 +22,7 @@
       <tr>
         <td class="submenu-item p-3">
           <img class="menu-icon" src="{{asset('img/wallet.svg')}}"> 
-          <a class="submenu-link" href="{{asset('')}}"><span> Wallet</span></a>
+          <a class="submenu-link" href="{{ path('wallet', {id: user.id}) }}"><span> Wallet</span></a>
         </td>
       </tr>
     </table>
@@ -31,6 +31,33 @@
 
     <div class="embed-responsive embed-responsive-16by9">
       
+      <!-- Votre contenu ici -->
+      <h1>User Wallets</h1>
+      <p>User ID: {{ userId }}</p>
+      <p>User Name: {{ user.email }}</p>
+
+      <h2>Add Crypto Amount:</h2>
+      {{ form_start(form) }}
+      {{ form_row(form.crypto) }}
+      {{ form_row(form.quantity) }}
+      {{ form_row(form.total_cost) }}
+      {{ form_end(form) }}
+      <hr>
+
+      <h2>Wallets:</h2>
+      <ul>
+          {% for wallet in wallets %}
+              <li>
+                  Wallet ID: {{ wallet.id }},
+                  Crypto ID: {{ wallet.cryptoId }},
+                  Quantity: {{ wallet.quantity }},
+                  Total Cost: {{ wallet.totalCost }}
+              </li>
+          {% endfor %}
+      </ul>
+
+
+
       <div>
         <table class="table">
             <thead>
@@ -41,23 +68,8 @@
                 <th scope="col">var % 24h</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>
-                    <span class="crypto">
-                      {{ userId }}
-                    </span>
-                </td>
-                <td>
-                    <span>??????</span>
-                </td>
-                <td>
-                    <span class="price"></span><span>€</span>
-                </td>
-                <td>
-                    <span class="day-change-percent"></span><span>%</span>
-                </td>
-              </tr>
+            <tbody class="tbody">
+
             </tbody>
         </table>
     </div>
@@ -72,4 +84,124 @@
 </div>
 </div>
 
+<script>
+const urls = [
+    'wss://stream.binance.com:9443/stream?streams=btcusdt@ticker',    // Bitcoin
+    'wss://stream.binance.com:9443/stream?streams=ethusdt@ticker',    // Ethereum
+    'wss://stream.binance.com:9443/stream?streams=xrpusdt@ticker',    // Ripple (XRP)
+    'wss://stream.binance.com:9443/stream?streams=xemusdt@ticker',    // NEM
+    'wss://stream.binance.com:9443/stream?streams=iotausdt@ticker',    // IOTA
+    'wss://stream.binance.com:9443/stream?streams=bchusdt@ticker',    // Bitcoin Cash
+    'wss://stream.binance.com:9443/stream?streams=adausdt@ticker',    // Cardano
+    'wss://stream.binance.com:9443/stream?streams=ltcusdt@ticker',    // Litecoin
+    'wss://stream.binance.com:9443/stream?streams=xlmusdt@ticker',    // Stellar (XLM)
+    'wss://stream.binance.com:9443/stream?streams=dashusdt@ticker'    // Dash
+];
+
+const cryptoData = {}; // Store crypto data
+
+urls.forEach((url) => {
+    const ws = new WebSocket(url);
+
+    ws.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        const symbol = response.data.s;
+        const changePercent = response.data.P;
+        const price = response.data.c;
+
+        let alias = '';
+
+        if (symbol) {
+            if (symbol == 'BTCUSDT') {
+                alias = 'Bitcoin';
+            }
+            else if (symbol == 'ETHUSDT') {
+                alias = 'Ethereum';
+            }
+            else if (symbol == 'XRPUSDT') {
+                alias = 'Ripple';
+            }
+            else if (symbol == 'XEMUSDT') {
+                alias = 'NEM';
+            }
+            else if (symbol == 'IOTAUSDT') {
+                alias = 'IOTA';
+            }
+            else if (symbol == 'BCHUSDT') {
+                alias = 'Bitcoin Cash';
+            }
+            else if (symbol == 'ADAUSDT') {
+                alias = 'Cardano';
+            }
+            else if (symbol == 'LTCUSDT') {
+                alias = 'Litecoin';
+            }
+            else if (symbol == 'XLMUSDT') {
+                alias = 'Stellar';
+            }
+            else if (symbol == 'DASHUSDT') {
+                alias = 'Dash';
+            }
+        }
+
+
+        // Update crypto data
+        cryptoData[symbol] = { changePercent, price };
+
+        // Update or create table row
+        let row = document.querySelector(`tr[data-crypto="${symbol}"]`);
+
+        if (row) {
+          row.querySelector('.change-percent').innerText = changePercent + '%';
+          row.querySelector('.price').innerText = price + ' $';
+        } else {
+          // Create table row
+          row = document.createElement('tr');
+          row.setAttribute('data-crypto', symbol);
+
+          // Create table data cells
+          const cryptoCell = document.createElement('td');
+          cryptoCell.innerText = alias;
+          row.appendChild(cryptoCell);
+
+          const quantityCell = document.createElement('td');
+          quantityCell.innerText = 0;
+          row.appendChild(quantityCell);
+
+          const priceCell = document.createElement('td');
+          priceCell.classList.add('price');
+          priceCell.innerText = price + ' $';
+          row.appendChild(priceCell);
+
+          const changePercentCell = document.createElement('td');
+          changePercentCell.classList.add('change-percent');
+          changePercentCell.innerText = changePercent + '%';
+          row.appendChild(changePercentCell);
+
+          // Append row to table
+          document.querySelector('.tbody').appendChild(row);
+        }
+    };
+
+    ws.onclose = () => {
+        console.log('WebSocket connection closed, retrying in 5 seconds...');
+        setTimeout(() => connectWebSocket(url), 5000); // Reconnect after 5 seconds
+    };
+
+    ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+
+    // Sending unsolicited pong frames to keep the connection alive
+    setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send('pong');
+            console.log('Sent unsolicited pong');
+        }
+    }, 180000); // Every 3 minutes
+});
+
+
+
+</script>
 {% endblock %}
