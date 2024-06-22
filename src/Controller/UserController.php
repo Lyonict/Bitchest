@@ -35,6 +35,12 @@ class UserController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
         $id = $session->get('walletUserId');
+        $requestId = $request->query->get('id');
+
+        if ($requestId) {
+            $id = $requestId;
+            $session->set('walletUserId', $id);
+        }
 
         if ($id === null) {
             // Handle the case where the walletUserId is not set in the session
