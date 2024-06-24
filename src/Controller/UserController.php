@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Wallet;
-use App\Entity\Cryptocurrencies;
 use App\Form\CryptoAmountType;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
@@ -19,10 +18,16 @@ class UserController extends AbstractController
     #[Route('/user', name: 'user')]
     public function index(UserRepository $repository): Response
     {
-        $users = $repository->findAll();
+        // Récupérer l'utilisateur connecté
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            // Gérer le cas où l'utilisateur n'est pas connecté
+            throw $this->createAccessDeniedException('User not authenticated.');
+        }
 
         return $this->render('user/user.html.twig', [
-            "users" => $users,
+            "currentUser" => $currentUser,
         ]);
     }
 
@@ -43,49 +48,57 @@ class UserController extends AbstractController
         }
 
         if ($id === null) {
-            // Handle the case where the walletUserId is not set in the session
+            // Gérer le cas où walletUserId n'est pas défini en session
             $this->addFlash('error', 'No wallet user ID set in session.');
-            return $this->redirectToRoute('user'); // Redirect or handle as appropriate
+            return $this->redirectToRoute('user'); // Rediriger ou gérer comme approprié
+        }
+
+        // Récupérer l'utilisateur connecté
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            // Gérer le cas où l'utilisateur n'est pas connecté
+            throw $this->createAccessDeniedException('User not authenticated.');
         }
 
         $user = $userRepository->find($id);
 
         if (!$user) {
-            // Handle the case where the user is not found
+            // Gérer le cas où l'utilisateur n'est pas trouvé
             $this->addFlash('error', 'User not found.');
-            return $this->redirectToRoute('user'); // Redirect or handle as appropriate
+            return $this->redirectToRoute('user'); // Rediriger ou gérer comme approprié
         }
 
         // Fetch wallets for the user
         $wallets = $walletRepository->findBy(['user' => $user]);
 
-        // Create form for adding crypto amount
+        // Créer le formulaire pour ajouter le montant de crypto
         $wallet = new Wallet();
         $form = $this->createForm(CryptoAmountType::class, $wallet);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle form submission
-            // Set the user for the wallet
+            // Gérer la soumission du formulaire
+            // Définir l'utilisateur pour le portefeuille
             $wallet->setUser($user);
 
-            // Save the wallet entity to the database
+            // Enregistrer l'entité de portefeuille dans la base de données
             $entityManager->persist($wallet);
             $entityManager->flush();
 
             $this->addFlash('success', 'Crypto amount added successfully.');
 
-            // Redirect to avoid resubmission
+            // Rediriger pour éviter la soumission multiple
             return $this->redirectToRoute('wallet', ['id' => $id]);
         }
 
         return $this->render('user/wallet.html.twig', [
+            "currentUser" => $currentUser,
             "user" => $user,
             "userId" => $id,
             "wallets" => $wallets,
-            "form" => $form->createView(), // Pass the form view to the template
+            "form" => $form->createView(), // Passer la vue du formulaire au template
         ]);
     }
 }
-
