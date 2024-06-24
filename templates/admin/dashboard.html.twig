@@ -10,10 +10,6 @@
                 <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill">{{ user.email }}</span>
                  : 
                 <span class="badge bg-light-subtle border border-light-subtle text-light-emphasis" onclick="copyToClipboard('{{ user.password }}')">{{ user.password }}</span>
-                <span id="copiedText" style="display: none;">
-                    copied
-                    <i class="fas fa-check text-gray"></i>
-                </span>
             </div>
         {% endif %}
     {% endfor %}
@@ -29,13 +25,28 @@
         document.execCommand('copy');
         document.body.removeChild(textarea);
         
-        const copiedText = document.getElementById('copiedText');
-        copiedText.style.display = 'inline';
+        const copiedText = document.createElement('span');
+        copiedText.innerText = 'copied ';
+        copiedText.classList.add('copiedText');
         copiedText.style.color = 'gray';
+        const checkIcon = document.createElement('i');
+        checkIcon.classList.add('fas', 'fa-check', 'text-gray');
+        copiedText.appendChild(checkIcon);
+        
+        const clickedElement = event.target;
+        const parentElement = clickedElement.parentElement;
+        
+        // Supprimer l'ancien texte "copied" s'il est déjà présent
+        const oldCopiedText = parentElement.querySelector('.copiedText');
+        if (oldCopiedText) {
+            parentElement.removeChild(oldCopiedText);
+        }
+        
+        parentElement.appendChild(copiedText);
+        
         setTimeout(function() {
             copiedText.style.display = 'none';
         }, 2000);
     }
     </script>
 {% endblock %}
-
