@@ -1,5 +1,13 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
 {% block content %}
-
+    <div>
+    <h1>Dashboard</h1>
+    <p>New temporary passwords to give :</p>
+    {% for user in users %}
+        {% if "TEMP_" in user.password %}
+            <span>{{ user.email }} : {{ user.password }}</span>
+        {% endif %}
+    {% endfor %}
+    </div>
 {% endblock %}

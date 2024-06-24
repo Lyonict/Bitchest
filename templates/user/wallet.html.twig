@@ -13,6 +13,15 @@
           <a class="submenu-link" href="{{asset('user')}}"><span> Hub</span></a>
         </td>
       </tr>
+      {% if is_granted('ROLE_ADMIN') %}
+      {# Afficher l'élément HTML si l'utilisateur a le rôle ROLE_ADMIN #}
+      <tr>
+        <td class="submenu-item p-3">
+          <img class="menu-icon" src="{{asset('img/admin.svg')}}">
+          <a class="submenu-link" href="{{asset('admin')}}"><span> Administration</span></a>
+        </td>
+      </tr>
+      {% endif %}
       <tr>
         <td class="submenu-item p-3">
           <img class="menu-icon" src="{{asset('img/account.svg')}}">

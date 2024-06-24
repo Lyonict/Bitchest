@@ -9,14 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 
 class DashboardController extends AbstractDashboardController
 {
     private $logger;
+    private $entityManager;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
+        $this->entityManager = $entityManager;
     }
 
 
@@ -45,7 +48,10 @@ class DashboardController extends AbstractDashboardController
 
         if ($this->isGranted('ROLE_ADMIN')) {
             // $this->logger->info('User has ROLE_ADMIN');
-            return $this->render('admin/dashboard.html.twig');
+            $users = $this->entityManager->getRepository(User::class)->findAll();
+            return $this->render('admin/dashboard.html.twig', [
+                'users' => $users,
+            ]);
         } else {
             // $this->logger->warning('User does not have ROLE_ADMIN');
             $this->addFlash('error', 'Access Denied. You do not have the necessary permissions to access this page.');
