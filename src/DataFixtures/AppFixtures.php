@@ -10,19 +10,16 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $user = new User();
-        $user->setEmail('bidule@gmail.com');
-        $user->setUsername('BiduleMachindu75');
-        $user->setPassword('Bidule123');
-        $user->setBank(500.00);
-        $user->setWallet([
-            "Bitcoin" => 2,
-            "Ethereum" => 12
-        ]);
+        // Users
+        $users = [];
 
-        $manager->persist($user);
-        $manager->flush();
+        $admin = new User();
+        $admin->setEmail('admin@bitchest.com')
+            ->setPassword('Bidule123')
+            ->setRoles(['ROLE_ADMIN, ROLE_USER'])
+            ->setEuros(500);
 
-        $manager->flush();
+        $users[] = $admin;
+        $manager->persist($admin);
     }
 }
