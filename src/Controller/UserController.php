@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Wallet;
-use App\Entity\Cryptocurrencies;
 use App\Form\CryptoAmountType;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
@@ -19,10 +18,16 @@ class UserController extends AbstractController
     #[Route('/user', name: 'user')]
     public function index(UserRepository $repository): Response
     {
-        $users = $repository->findAll();
+        // Récupérer l'utilisateur connecté
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            // Gérer le cas où l'utilisateur n'est pas connecté
+            throw $this->createAccessDeniedException('User not authenticated.');
+        }
 
         return $this->render('user/user.html.twig', [
-            "users" => $users,
+            "currentUser" => $currentUser,
         ]);
     }
 
@@ -46,6 +51,14 @@ class UserController extends AbstractController
             // Handle the case where the walletUserId is not set in the session
             $this->addFlash('error', 'No wallet user ID set in session.');
             return $this->redirectToRoute('user'); // Redirect or handle as appropriate
+        }
+
+        // Récupérer l'utilisateur connecté
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            // Gérer le cas où l'utilisateur n'est pas connecté
+            throw $this->createAccessDeniedException('User not authenticated.');
         }
 
         $user = $userRepository->find($id);
@@ -81,6 +94,7 @@ class UserController extends AbstractController
         }
 
         return $this->render('user/wallet.html.twig', [
+            "currentUser" => $currentUser,
             "user" => $user,
             "userId" => $id,
             "wallets" => $wallets,

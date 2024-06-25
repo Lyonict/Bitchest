@@ -22,7 +22,9 @@
       <tr>
         <td class="submenu-item p-3">
           <img class="menu-icon" src="{{asset('img/wallet.svg')}}"> 
-          <a class="submenu-link" href="{{ path('wallet', {id: user.id}) }}"><span> Wallet</span></a>
+          <a class="submenu-link" href="{{ path('wallet', {id: currentUser.id}) }}">
+            <span> Wallet</span>
+          </a>
         </td>
       </tr>
     </table>
@@ -63,7 +65,7 @@
             <thead>
               <tr>
                 <th scope="col">Name</th>
-                <th scope="col">?={numberyouhave}</th>
+                <th scope="col">Quantity</th>
                 <th scope="col">Last price</th>
                 <th scope="col">var % 24h</th>
               </tr>
