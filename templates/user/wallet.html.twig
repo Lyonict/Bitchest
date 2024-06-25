@@ -71,7 +71,14 @@
               </tr>
             </thead>
             <tbody class="tbody">
-
+              {% for symbol, data in cryptoData %}
+                <tr data-crypto="{{ symbol }}">
+                  <td>{{ data.alias }}</td>
+                  <td>{{ data.quantity }}</td>
+                  <td class="price">{{ data.price }} $</td>
+                  <td class="change-percent">{{ data.changePercent }}%</td>
+                </tr>
+              {% endfor %}
             </tbody>
         </table>
     </div>
@@ -86,7 +93,7 @@
 </div>
 </div>
 
-<script>
+<!-- <script>
 const urls = [
     'wss://stream.binance.com:9443/stream?streams=btcusdt@ticker',    // Bitcoin
     'wss://stream.binance.com:9443/stream?streams=ethusdt@ticker',    // Ethereum
@@ -112,40 +119,21 @@ urls.forEach((url) => {
         const price = response.data.c;
 
         let alias = '';
-
         if (symbol) {
-            if (symbol == 'BTCUSDT') {
-                alias = 'Bitcoin';
-            }
-            else if (symbol == 'ETHUSDT') {
-                alias = 'Ethereum';
-            }
-            else if (symbol == 'XRPUSDT') {
-                alias = 'Ripple';
-            }
-            else if (symbol == 'XEMUSDT') {
-                alias = 'NEM';
-            }
-            else if (symbol == 'IOTAUSDT') {
-                alias = 'IOTA';
-            }
-            else if (symbol == 'BCHUSDT') {
-                alias = 'Bitcoin Cash';
-            }
-            else if (symbol == 'ADAUSDT') {
-                alias = 'Cardano';
-            }
-            else if (symbol == 'LTCUSDT') {
-                alias = 'Litecoin';
-            }
-            else if (symbol == 'XLMUSDT') {
-                alias = 'Stellar';
-            }
-            else if (symbol == 'DASHUSDT') {
-                alias = 'Dash';
-            }
+          const aliases = {
+            'BTCUSDT': 'Bitcoin',
+            'ETHUSDT': 'Ethereum',
+            'XRPUSDT': 'Ripple',
+            'XEMUSDT': 'NEM',
+            'IOTAUSDT': 'IOTA',
+            'BCHUSDT': 'Bitcoin Cash',
+            'ADAUSDT': 'Cardano',
+            'LTCUSDT': 'Litecoin',
+            'XLMUSDT': 'Stellar',
+            'DASHUSDT': 'Dash'
+          };
+          alias = aliases[symbol];
         }
-
 
         // Update crypto data
         cryptoData[symbol] = { changePercent, price };
@@ -205,5 +193,5 @@ urls.forEach((url) => {
 
 
 
-</script>
+</script> -->
 {% endblock %}

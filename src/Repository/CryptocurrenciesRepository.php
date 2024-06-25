@@ -21,6 +21,12 @@ class CryptocurrenciesRepository extends ServiceEntityRepository
         parent::__construct($registry, Cryptocurrencies::class);
     }
 
+    public function findCryptoNameById(int $id): ?string
+    {
+        $crypto = $this->find($id);
+        return $crypto ? $crypto->getCryptoName() : null;
+    }
+
     //    /**
     //     * @return Cryptocurrencies[] Returns an array of Cryptocurrencies objects
     //     */

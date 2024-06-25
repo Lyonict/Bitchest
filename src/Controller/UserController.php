@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\CryptoService;
 
 class UserController extends AbstractController
 {
@@ -37,7 +38,8 @@ class UserController extends AbstractController
         WalletRepository $walletRepository,
         SessionInterface $session,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        CryptoService $cryptoService // Inject CryptoService
     ): Response {
         $id = $session->get('walletUserId');
         $requestId = $request->query->get('id');
@@ -72,6 +74,9 @@ class UserController extends AbstractController
         // Fetch wallets for the user
         $wallets = $walletRepository->findBy(['user' => $user]);
 
+        // Get crypto data using CryptoService
+        $cryptoData = $cryptoService->getCryptoData($wallets, $currentUser);
+
         // Create form for adding crypto amount
         $wallet = new Wallet();
         $form = $this->createForm(CryptoAmountType::class, $wallet);
@@ -94,11 +99,12 @@ class UserController extends AbstractController
         }
 
         return $this->render('user/wallet.html.twig', [
-            "currentUser" => $currentUser,
-            "user" => $user,
-            "userId" => $id,
-            "wallets" => $wallets,
-            "form" => $form->createView(), // Pass the form view to the template
+            'currentUser' => $currentUser,
+            'user' => $user,
+            'userId' => $id,
+            'wallets' => $wallets,
+            'form' => $form->createView(),
+            'cryptoData' => $cryptoData, // Pass crypto data to the template
         ]);
     }
 }
