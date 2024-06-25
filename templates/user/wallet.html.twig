@@ -58,8 +58,6 @@
           {% endfor %}
       </ul>
 
-
-
       <div>
         <table class="table">
             <thead>
@@ -92,106 +90,4 @@
 </div>
 </div>
 </div>
-
-<!-- <script>
-const urls = [
-    'wss://stream.binance.com:9443/stream?streams=btcusdt@ticker',    // Bitcoin
-    'wss://stream.binance.com:9443/stream?streams=ethusdt@ticker',    // Ethereum
-    'wss://stream.binance.com:9443/stream?streams=xrpusdt@ticker',    // Ripple (XRP)
-    'wss://stream.binance.com:9443/stream?streams=xemusdt@ticker',    // NEM
-    'wss://stream.binance.com:9443/stream?streams=iotausdt@ticker',    // IOTA
-    'wss://stream.binance.com:9443/stream?streams=bchusdt@ticker',    // Bitcoin Cash
-    'wss://stream.binance.com:9443/stream?streams=adausdt@ticker',    // Cardano
-    'wss://stream.binance.com:9443/stream?streams=ltcusdt@ticker',    // Litecoin
-    'wss://stream.binance.com:9443/stream?streams=xlmusdt@ticker',    // Stellar (XLM)
-    'wss://stream.binance.com:9443/stream?streams=dashusdt@ticker'    // Dash
-];
-
-const cryptoData = {}; // Store crypto data
-
-urls.forEach((url) => {
-    const ws = new WebSocket(url);
-
-    ws.onmessage = (event) => {
-        const response = JSON.parse(event.data);
-        const symbol = response.data.s;
-        const changePercent = response.data.P;
-        const price = response.data.c;
-
-        let alias = '';
-        if (symbol) {
-          const aliases = {
-            'BTCUSDT': 'Bitcoin',
-            'ETHUSDT': 'Ethereum',
-            'XRPUSDT': 'Ripple',
-            'XEMUSDT': 'NEM',
-            'IOTAUSDT': 'IOTA',
-            'BCHUSDT': 'Bitcoin Cash',
-            'ADAUSDT': 'Cardano',
-            'LTCUSDT': 'Litecoin',
-            'XLMUSDT': 'Stellar',
-            'DASHUSDT': 'Dash'
-          };
-          alias = aliases[symbol];
-        }
-
-        // Update crypto data
-        cryptoData[symbol] = { changePercent, price };
-
-        // Update or create table row
-        let row = document.querySelector(`tr[data-crypto="${symbol}"]`);
-
-        if (row) {
-          row.querySelector('.change-percent').innerText = changePercent + '%';
-          row.querySelector('.price').innerText = price + ' $';
-        } else {
-          // Create table row
-          row = document.createElement('tr');
-          row.setAttribute('data-crypto', symbol);
-
-          // Create table data cells
-          const cryptoCell = document.createElement('td');
-          cryptoCell.innerText = alias;
-          row.appendChild(cryptoCell);
-
-          const quantityCell = document.createElement('td');
-          quantityCell.innerText = 0;
-          row.appendChild(quantityCell);
-
-          const priceCell = document.createElement('td');
-          priceCell.classList.add('price');
-          priceCell.innerText = price + ' $';
-          row.appendChild(priceCell);
-
-          const changePercentCell = document.createElement('td');
-          changePercentCell.classList.add('change-percent');
-          changePercentCell.innerText = changePercent + '%';
-          row.appendChild(changePercentCell);
-
-          // Append row to table
-          document.querySelector('.tbody').appendChild(row);
-        }
-    };
-
-    ws.onclose = () => {
-        console.log('WebSocket connection closed, retrying in 5 seconds...');
-        setTimeout(() => connectWebSocket(url), 5000); // Reconnect after 5 seconds
-    };
-
-    ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-    };
-
-    // Sending unsolicited pong frames to keep the connection alive
-    setInterval(() => {
-        if (ws.readyState === WebSocket.OPEN) {
-            ws.send('pong');
-            console.log('Sent unsolicited pong');
-        }
-    }, 180000); // Every 3 minutes
-});
-
-
-
-</script> -->
 {% endblock %}
