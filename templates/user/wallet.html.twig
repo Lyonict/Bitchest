@@ -50,7 +50,7 @@
       <ul>
           {% for wallet in wallets %}
               <li>
-                  Wallet ID: {{ wallet.id }},
+                  Wallet ID: {{ wallet.user.id }},
                   Crypto ID: {{ wallet.cryptoId }},
                   Quantity: {{ wallet.quantity }},
                   Total Cost: {{ wallet.totalCost }}

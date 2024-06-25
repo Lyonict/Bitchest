@@ -37,8 +37,8 @@ class CryptoAmountType extends AbstractType
                 'attr' => ['class' => 'btn btn-primary'],
             ]);
 
-        // Add event listener to handle form submission
-        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            // Add event listener to handle form submission
+            $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();
             $wallet = $event->getData();
 
