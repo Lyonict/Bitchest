@@ -1,0 +1,52 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+    <div class="col py-3">
+    <h1>Dashboard</h1>
+    <p>New temporary passwords to give :</p>
+    {% for user in users %}
+        {% if "TEMP_" in user.password %}
+            <div class="mb-2">
+                <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill">{{ user.email }}</span>
+                 : 
+                <span class="badge bg-light-subtle border border-light-subtle text-light-emphasis" onclick="copyToClipboard('{{ user.password }}')">{{ user.password }}</span>
+            </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+    
+    <script>
+    function copyToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        const copiedText = document.createElement('span');
+        copiedText.innerText = 'copied ';
+        copiedText.classList.add('copiedText');
+        copiedText.style.color = 'gray';
+        const checkIcon = document.createElement('i');
+        checkIcon.classList.add('fas', 'fa-check', 'text-gray');
+        copiedText.appendChild(checkIcon);
+        
+        const clickedElement = event.target;
+        const parentElement = clickedElement.parentElement;
+        
+        // Supprimer l'ancien texte "copied" s'il est déjà présent
+        const oldCopiedText = parentElement.querySelector('.copiedText');
+        if (oldCopiedText) {
+            parentElement.removeChild(oldCopiedText);
+        }
+        
+        parentElement.appendChild(copiedText);
+        
+        setTimeout(function() {
+            copiedText.style.display = 'none';
+        }, 2000);
+    }
+    </script>
+{% endblock %}

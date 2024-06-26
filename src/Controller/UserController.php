@@ -53,9 +53,9 @@ class UserController extends AbstractController
         }
 
         if ($id === null) {
-            // Handle the case where the walletUserId is not set in the session
+            // Gérer le cas où walletUserId n'est pas défini en session
             $this->addFlash('error', 'No wallet user ID set in session.');
-            return $this->redirectToRoute('user'); // Redirect or handle as appropriate
+            return $this->redirectToRoute('user'); // Rediriger ou gérer comme approprié
         }
 
         // Récupérer l'utilisateur connecté
@@ -69,9 +69,9 @@ class UserController extends AbstractController
         $user = $userRepository->find($id);
 
         if (!$user) {
-            // Handle the case where the user is not found
+            // Gérer le cas où l'utilisateur n'est pas trouvé
             $this->addFlash('error', 'User not found.');
-            return $this->redirectToRoute('user'); // Redirect or handle as appropriate
+            return $this->redirectToRoute('user'); // Rediriger ou gérer comme approprié
         }
 
         // Fetch wallets for the user
@@ -178,3 +178,4 @@ class UserController extends AbstractController
         ]);
     }
 }
+
