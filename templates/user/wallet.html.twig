@@ -54,14 +54,17 @@
         {{ form_end(sellForm) }}
       </div>
 
-      {% for label, messages in app.flashes %}
-        <div class="flash-{{ label }}">
-          {% for message in messages %}
-            <p>{{ message }}</p>
-          {% endfor %}
-        </div>
-      {% endfor %}
 
+      <!-- Display flash messages -->
+      <div>
+        {% for type, messages in app.flashes %}
+          {% for message in messages %}
+            <div class="alert alert-{{ type }}" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endfor %}
+      </div>
       <hr>
 
       <h2>Wallets:</h2>

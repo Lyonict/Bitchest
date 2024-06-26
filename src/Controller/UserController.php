@@ -89,28 +89,38 @@ class UserController extends AbstractController
         $sellForm->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle form submission for buying
             $wallet->setUser($user);
-
-            // Deduct totalCost from user's euros
-            $totalCost = $wallet->getTotalCost();
-            $userEuros = $user->getEuros();
-
-            if ($userEuros < $totalCost) {
-                $this->addFlash('error', 'Insufficient funds to complete the transaction.');
+            $selectedCrypto = $form->get('crypto')->getData();
+            $quantity = $form->get('quantity')->getData();
+    
+            // Check if the cryptocurrency already exists in the user's wallet
+            $existingWallet = $walletRepository->findOneBy([
+                'user' => $user,
+                'cryptoId' => $selectedCrypto->getCryptoId()
+            ]);
+    
+            if ($existingWallet) {
+                // Update existing wallet entry
+                $existingWallet->setQuantity($existingWallet->getQuantity() + $quantity);
+                $existingWallet->setTotalCost($existingWallet->getTotalCost() + ($quantity * $wallet->getTotalCost()));
+    
+                $entityManager->persist($existingWallet);
             } else {
-                $user->setEuros($userEuros - $totalCost);
-
-                // Save the wallet entity to the database
+                // Create a new wallet entry
+                $wallet->setCryptoId($selectedCrypto->getCryptoId());
+                $wallet->setQuantity($quantity);
+                $wallet->setTotalCost($wallet->getTotalCost());
                 $entityManager->persist($wallet);
-                $entityManager->flush();
-
-                $this->addFlash('success', 'Crypto amount added successfully.');
-
-                // Redirect to avoid resubmission
-                return $this->redirectToRoute('wallet', ['id' => $id]);
             }
+    
+            $user->setEuros($user->getEuros() - $wallet->getTotalCost());
+    
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'Crypto amount added successfully.');
+            return $this->redirectToRoute('wallet', ['id' => $id]);
         }
+    
 
         if ($sellForm->isSubmitted() && $sellForm->isValid()) {
             // Handle form submission for selling
@@ -129,6 +139,8 @@ class UserController extends AbstractController
 
                 if ($quantity > $currentQuantity) {
                     $this->addFlash('error', 'Insufficient crypto quantity to complete the transaction.');
+                    // Redirect to avoid resubmission
+                    return $this->redirectToRoute('wallet', ['id' => $id]);
                 } else {
                     // Deduct the quantity of crypto
                     $existingWallet->setQuantity($currentQuantity - $quantity);
@@ -150,6 +162,8 @@ class UserController extends AbstractController
                 }
             } else {
                 $this->addFlash('error', 'No cryptocurrency found to sell.');
+                // Redirect to avoid resubmission
+                return $this->redirectToRoute('wallet', ['id' => $id]);
             }
         }
 
