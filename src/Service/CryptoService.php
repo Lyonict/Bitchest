@@ -63,4 +63,14 @@ class CryptoService
 
         return $cryptoData;
     }
+    
+    public function getCryptoPrice(string $symbol): array
+    {
+        $response = $this->client->request(
+            'GET',
+            "https://api.binance.com/api/v3/ticker/24hr?symbol=" . strtoupper($symbol)
+        );
+        
+        return $response->toArray();
+    }
 }

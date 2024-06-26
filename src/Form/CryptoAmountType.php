@@ -12,28 +12,33 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class CryptoAmountType extends AbstractType
 {
+    private $client;
+
+    public function __construct(HttpClientInterface $client)
+    {
+        $this->client = $client;
+    }
+    
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('crypto', EntityType::class, [
                 'class' => Cryptocurrencies::class,
                 'choice_label' => 'crypto_name',
-                'label' => 'Cryptocurrency',
+                'label' => 'Cryptocurrency :    ',
                 'placeholder' => 'Select a cryptocurrency',
                 'required' => true,
                 'mapped' => false, // This field is not directly mapped to an entity property
             ])
             ->add('quantity', NumberType::class, [
-                'label' => 'Quantity',
-            ])
-            ->add('total_cost', NumberType::class, [
-                'label' => 'Total Cost',
+                'label' => 'Quantity :',
             ])
             ->add('save', SubmitType::class, [
-                'label' => 'Add Crypto Amount',
+                'label' => 'Buy',
                 'attr' => ['class' => 'btn btn-primary'],
             ]);
 
@@ -44,9 +49,19 @@ class CryptoAmountType extends AbstractType
 
             // Retrieve the selected cryptocurrency from the form
             $selectedCrypto = $form->get('crypto')->getData();
+            $quantity = $form->get('quantity')->getData();
 
-            // Set the crypto_id property of the Wallet entity
+            // Fetch the current price for the selected cryptocurrency
+            $symbol = strtolower($selectedCrypto->getCryptoSymbol()) . 'usdt';
+            $response = $this->client->request('GET', "https://api.binance.com/api/v3/ticker/24hr?symbol=" . strtoupper($symbol));
+            $data = $response->toArray();
+
+            $price = $data['lastPrice'];
+            $totalCost = $price * $quantity;
+
             $wallet->setCryptoId($selectedCrypto->getCryptoId());
+            $wallet->setQuantity($quantity);
+            $wallet->setTotalCost($totalCost);
         });
     }
 

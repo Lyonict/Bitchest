@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Wallet;
 use App\Form\CryptoAmountType;
+use App\Form\SellCryptoType; // Add SellCryptoType
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\CryptoService;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class UserController extends AbstractController
 {
@@ -39,7 +41,8 @@ class UserController extends AbstractController
         SessionInterface $session,
         Request $request,
         EntityManagerInterface $entityManager,
-        CryptoService $cryptoService // Inject CryptoService
+        CryptoService $cryptoService,
+        HttpClientInterface $client // Inject HttpClientInterface
     ): Response {
         $id = $session->get('walletUserId');
         $requestId = $request->query->get('id');
@@ -77,35 +80,42 @@ class UserController extends AbstractController
         // Get crypto data using CryptoService
         $cryptoData = $cryptoService->getCryptoData($wallets, $currentUser);
 
-        // Create form for adding crypto amount
-        $wallet = new Wallet();
-        $form = $this->createForm(CryptoAmountType::class, $wallet);
+        // Create form for adding crypto amount (Buy form)
+        $buyForm = $this->createForm(CryptoAmountType::class, new Wallet());
 
-        $form->handleRequest($request);
+        // Handle form submissions
+        $buyForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Handle form submission
-            // Set the user for the wallet
-            $wallet->setUser($user);
+        if ($buyForm->isSubmitted() && $buyForm->isValid()) {
+            // Handle crypto purchase
+            $wallet = $buyForm->getData();
+            $totalCost = $wallet->getTotalCost(); // Assuming getTotalCost() is set correctly in CryptoAmountType
+            $userEuros = $user->getEuros();
 
-            // Save the wallet entity to the database
-            $entityManager->persist($wallet);
-            $entityManager->flush();
+            if ($userEuros < $totalCost) {
+                $this->addFlash('error', 'Insufficient funds to complete the transaction.');
+            } else {
+                $user->setEuros($userEuros - $totalCost);
 
-            $this->addFlash('success', 'Crypto amount added successfully.');
+                // Save the wallet entity to the database
+                $wallet->setUser($user);
+                $entityManager->persist($wallet);
+                $entityManager->flush();
 
-            // Redirect to avoid resubmission
-            return $this->redirectToRoute('wallet', ['id' => $id]);
-        }
+                $this->addFlash('success', 'Crypto amount added successfully.');
+
+                // Redirect to avoid resubmission
+                return $this->redirectToRoute('wallet', ['id' => $id]);
+            }
+        }   
 
         return $this->render('user/wallet.html.twig', [
             'currentUser' => $currentUser,
             'user' => $user,
             'userId' => $id,
             'wallets' => $wallets,
-            'form' => $form->createView(),
-            'cryptoData' => $cryptoData, // Pass crypto data to the template
+            'buyForm' => $buyForm->createView(),
+            'cryptoData' => $cryptoData,
         ]);
     }
 }
-

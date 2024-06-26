@@ -38,12 +38,14 @@
       <p>User ID: {{ userId }}</p>
       <p>User Name: {{ user.email }}</p>
 
-      <h2>Add Crypto Amount:</h2>
-      {{ form_start(form) }}
-      {{ form_row(form.crypto) }}
-      {{ form_row(form.quantity) }}
-      {{ form_row(form.total_cost) }}
-      {{ form_end(form) }}
+      <div>
+      <h2>Add Cryptocurrency</h2>
+      {{ form_start(buyForm) }}
+        {{ form_row(buyForm.crypto) }}
+        {{ form_row(buyForm.quantity) }}
+      {{ form_end(buyForm) }}
+      </div>
+
       <hr>
 
       <h2>Wallets:</h2>
