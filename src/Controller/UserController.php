@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Wallet;
 use App\Form\CryptoAmountType;
-use App\Form\SellCryptoType; // Add SellCryptoType
+use App\Form\CryptoSellType;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -80,16 +80,20 @@ class UserController extends AbstractController
         // Get crypto data using CryptoService
         $cryptoData = $cryptoService->getCryptoData($wallets, $currentUser);
 
-        // Create form for adding crypto amount (Buy form)
-        $buyForm = $this->createForm(CryptoAmountType::class, new Wallet());
+        // Create form for adding crypto amount
+        $wallet = new Wallet();
+        $form = $this->createForm(CryptoAmountType::class, $wallet);
+        $sellForm = $this->createForm(CryptoSellType::class, $wallet);
 
-        // Handle form submissions
-        $buyForm->handleRequest($request);
+        $form->handleRequest($request);
+        $sellForm->handleRequest($request);
 
-        if ($buyForm->isSubmitted() && $buyForm->isValid()) {
-            // Handle crypto purchase
-            $wallet = $buyForm->getData();
-            $totalCost = $wallet->getTotalCost(); // Assuming getTotalCost() is set correctly in CryptoAmountType
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Handle form submission for buying
+            $wallet->setUser($user);
+
+            // Deduct totalCost from user's euros
+            $totalCost = $wallet->getTotalCost();
             $userEuros = $user->getEuros();
 
             if ($userEuros < $totalCost) {
@@ -98,7 +102,6 @@ class UserController extends AbstractController
                 $user->setEuros($userEuros - $totalCost);
 
                 // Save the wallet entity to the database
-                $wallet->setUser($user);
                 $entityManager->persist($wallet);
                 $entityManager->flush();
 
@@ -107,14 +110,56 @@ class UserController extends AbstractController
                 // Redirect to avoid resubmission
                 return $this->redirectToRoute('wallet', ['id' => $id]);
             }
-        }   
+        }
+
+        if ($sellForm->isSubmitted() && $sellForm->isValid()) {
+            // Handle form submission for selling
+            $wallet->setUser($user);
+
+            // Find the existing wallet entry for the selected cryptocurrency
+            $existingWallet = $walletRepository->findOneBy([
+                'user' => $user,
+                'cryptoId' => $wallet->getCryptoId()
+            ]);
+
+            if ($existingWallet) {
+                $quantity = $wallet->getQuantity();
+                $totalValue = $wallet->getTotalCost();
+                $currentQuantity = $existingWallet->getQuantity();
+
+                if ($quantity > $currentQuantity) {
+                    $this->addFlash('error', 'Insufficient crypto quantity to complete the transaction.');
+                } else {
+                    // Deduct the quantity of crypto
+                    $existingWallet->setQuantity($currentQuantity - $quantity);
+
+                    // Add the total value to the user's euros
+                    $user->setEuros($user->getEuros() + $totalValue);
+
+                    // Remove the wallet entry if the quantity is zero
+                    if ($existingWallet->getQuantity() == 0) {
+                        $entityManager->remove($existingWallet);
+                    }
+
+                    $entityManager->flush();
+
+                    $this->addFlash('success', 'Crypto amount sold successfully.');
+
+                    // Redirect to avoid resubmission
+                    return $this->redirectToRoute('wallet', ['id' => $id]);
+                }
+            } else {
+                $this->addFlash('error', 'No cryptocurrency found to sell.');
+            }
+        }
 
         return $this->render('user/wallet.html.twig', [
             'currentUser' => $currentUser,
             'user' => $user,
             'userId' => $id,
             'wallets' => $wallets,
-            'buyForm' => $buyForm->createView(),
+            'form' => $form->createView(),
+            'sellForm' => $sellForm->createView(),
             'cryptoData' => $cryptoData,
         ]);
     }

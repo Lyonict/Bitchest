@@ -40,11 +40,27 @@
 
       <div>
       <h2>Add Cryptocurrency</h2>
-      {{ form_start(buyForm) }}
-        {{ form_row(buyForm.crypto) }}
-        {{ form_row(buyForm.quantity) }}
-      {{ form_end(buyForm) }}
+      {{ form_start(form) }}
+        {{ form_row(form.crypto) }}
+        {{ form_row(form.quantity) }}
+      {{ form_end(form) }}
       </div>
+
+      <div>
+        <h2>Sell Cryptocurrency</h2>
+        {{ form_start(sellForm) }}
+          {{ form_row(sellForm.crypto) }}
+          {{ form_row(sellForm.quantity) }}
+        {{ form_end(sellForm) }}
+      </div>
+
+      {% for label, messages in app.flashes %}
+        <div class="flash-{{ label }}">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
 
       <hr>
 
