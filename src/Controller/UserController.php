@@ -52,27 +52,18 @@ class UserController extends AbstractController
         CryptoService $cryptoService,
         HttpClientInterface $client // Inject HttpClientInterface
     ): Response {
-        $id = $session->get('walletUserId');
-        $requestId = $request->query->get('id');
 
-        if ($requestId) {
-            $id = $requestId;
-            $session->set('walletUserId', $id);
-        }
-
-        if ($id === null) {
-            // Gérer le cas où walletUserId n'est pas défini en session
-            $this->addFlash('error', 'No wallet user ID set in session.');
-            return $this->redirectToRoute('user'); // Rediriger ou gérer comme approprié
-        }
-
-        // Récupérer l'utilisateur connecté
+        // Fetch current user
         $currentUser = $this->getUser();
+        dump($currentUser);
 
         if (!$currentUser) {
-            // Gérer le cas où l'utilisateur n'est pas connecté
             throw $this->createAccessDeniedException('User not authenticated.');
         }
+
+        $id = $currentUser->getId();
+        dump($id);
+        $session->set('walletUserId', $id); // Set in session if needed
 
         $user = $userRepository->find($id);
 

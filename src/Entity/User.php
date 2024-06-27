@@ -29,7 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(type: 'float', nullable: true)] // Ajoutez cette ligne
+    #[ORM\Column(type: 'float', nullable: true)]
     private ?float $euros = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Wallet::class)]
