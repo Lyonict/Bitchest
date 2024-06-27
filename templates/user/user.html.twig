@@ -39,12 +39,36 @@
   </div>
   <div class="right-column bg-light col-10 d-flex flex-column justify-content-start" style="overflow-y: scroll"> 
     <div class="d-flex flex-row mb-3 justify-content-between">
-      <div class="bento-box" style="width: 70%;">
+      <div class="bento-box" style="width: 70%; overflow-x: scroll;">
         Activity <span class="vertical-divider"></span>
         <!-- <div class=""></div> Last Transactions here-->
+        
+        <div class="d-flex flex-row align-items-center" style="height: 60px;">
+          {% for transaction in transactions %}
+
+            <div class="d-flex flex-column p-2" style="width: 100px; font-size: 14px;">
+              <div>
+                {% if transaction.transactionType == 'sell' %}
+                  <u style="fonr-size: 16px">Sold : </u></br>
+                  {{ transaction.quantity }} {{ transaction.cryptocurrency.getCryptoSymbol() }}
+                {% elseif transaction.transactionType == 'buy' %}
+                  <u style="fonr-size: 16px">Bought : </u></br>
+                  {{ transaction.quantity }} {{ transaction.cryptocurrency.getCryptoSymbol() }}
+                {% endif %}
+              </div>
+              <div style="color: #35A7FF; font-size: 10px;">
+                {{ transaction.date|date('Y-m-d') }}
+                </br>
+                {{ transaction.date|date('H:i:s') }}
+              </div>
+            </div>
+            <span class="vertical-divider"></span>
+          {% endfor %}
+        </div>
+
       </div>
       <div class="primary-background bento-box">
-        <span class="fs-4">Solde : {{ currentUser.euros }}</span>
+        <span class="fs-4">Solde : {{ currentUser.euros }} €</span>
       </div>
     </div>
 
@@ -59,6 +83,7 @@
       </div>
       <!-- TradingView Widget END -->  
     </div>
+  </div>
   </div>
     
   </div>

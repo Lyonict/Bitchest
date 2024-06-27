@@ -12167,7 +12167,7 @@ h3, .h3 {
 
 .vertical-divider {
   border-radius: 5px;
-  border-left: 1px solid white;
+  border: 1px solid white;
   height: 100%;
   margin: 0 20px;
 }

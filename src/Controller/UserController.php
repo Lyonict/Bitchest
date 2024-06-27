@@ -7,6 +7,7 @@ use App\Form\CryptoAmountType;
 use App\Form\CryptoSellType;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
+use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +16,13 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\CryptoService;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Entity\Transaction;
+use DateTime;
 
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'user')]
-    public function index(UserRepository $repository): Response
+    public function index(UserRepository $repository, TransactionRepository $transactionRepository): Response
     {
         // Récupérer l'utilisateur connecté
         $currentUser = $this->getUser();
@@ -29,8 +32,12 @@ class UserController extends AbstractController
             throw $this->createAccessDeniedException('User not authenticated.');
         }
 
+        // Fetch transactions for the current user
+        $transactions = $transactionRepository->findBy(['user' => $currentUser], ['id' => 'DESC']);
+
         return $this->render('user/user.html.twig', [
-            "currentUser" => $currentUser,
+            'currentUser' => $currentUser,
+            'transactions' => $transactions,
         ]);
     }
 
@@ -38,6 +45,7 @@ class UserController extends AbstractController
     public function show(
         UserRepository $userRepository,
         WalletRepository $walletRepository,
+        TransactionRepository $transactionRepository,
         SessionInterface $session,
         Request $request,
         EntityManagerInterface $entityManager,
@@ -105,12 +113,37 @@ class UserController extends AbstractController
                 $existingWallet->setTotalCost($existingWallet->getTotalCost() + ($quantity * $wallet->getTotalCost()));
     
                 $entityManager->persist($existingWallet);
+                // Buying transaction
+                $transaction = new Transaction();
+                $transaction->setUser($user);
+                $transaction->setCryptocurrency($selectedCrypto);
+                $transaction->setTransactionType('buy');
+                $transaction->setQuantity($quantity);
+                // Set the date of the transaction to the current date and time
+                $now = new DateTime('now', new \DateTimeZone('Europe/Paris'));
+                $dateTimeString = $now->format('d-m-Y H:i');
+                $transaction->setDate(new DateTime($dateTimeString));
+
+                $entityManager->persist($transaction);
             } else {
                 // Create a new wallet entry
                 $wallet->setCryptoId($selectedCrypto->getCryptoId());
                 $wallet->setQuantity($quantity);
                 $wallet->setTotalCost($wallet->getTotalCost());
                 $entityManager->persist($wallet);
+
+                // Buying transaction
+                $transaction = new Transaction();
+                $transaction->setUser($user);
+                $transaction->setCryptocurrency($selectedCrypto);
+                $transaction->setTransactionType('buy');
+                $transaction->setQuantity($quantity);
+                // Set the date of the transaction to the current date and time
+                $now = new DateTime('now', new \DateTimeZone('Europe/Paris'));
+                $dateTimeString = $now->format('d-m-Y H:i');
+                $transaction->setDate(new DateTime($dateTimeString));
+
+                $entityManager->persist($transaction);
             }
     
             $user->setEuros($user->getEuros() - $wallet->getTotalCost());
@@ -125,6 +158,7 @@ class UserController extends AbstractController
         if ($sellForm->isSubmitted() && $sellForm->isValid()) {
             // Handle form submission for selling
             $wallet->setUser($user);
+            $selectedCrypto = $sellForm->get('crypto')->getData();
 
             // Find the existing wallet entry for the selected cryptocurrency
             $existingWallet = $walletRepository->findOneBy([
@@ -152,6 +186,19 @@ class UserController extends AbstractController
                     if ($existingWallet->getQuantity() == 0) {
                         $entityManager->remove($existingWallet);
                     }
+
+                    // Sell transaction
+                    $transaction = new Transaction();
+                    $transaction->setUser($user);
+                    $transaction->setCryptocurrency($selectedCrypto);
+                    $transaction->setTransactionType('sell');
+                    $transaction->setQuantity($quantity);
+                    // Set the date of the transaction to the current date and time
+                    $now = new DateTime('now', new \DateTimeZone('Europe/Paris'));
+                    $dateTimeString = $now->format('d-m-Y H:i');
+                    $transaction->setDate(new DateTime($dateTimeString));
+
+                    $entityManager->persist($transaction);
 
                     $entityManager->flush();
 
