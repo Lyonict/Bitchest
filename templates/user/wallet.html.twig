@@ -42,26 +42,49 @@
 
     <div class="embed-responsive embed-responsive-16by9">
       
-      <!-- Votre contenu ici -->
-      <h1>User Wallets</h1>
-      <p>User ID: {{ userId }}</p>
-      <p>User Name: {{ user.email }}</p>
+      <!-- Content -->
+<div class="container my-5">
+    <div class="d-flex flex-row justify-content-between mb-4 p-3 bg-light shadow-sm rounded-4">
+        <div>
+            <h1 class="mb-3">User Wallets</h1>
+            <p><strong>User ID:</strong> {{ userId }}</p>
+            <p><strong>User Name:</strong> {{ user.email }}</p>
+        </div>
+        
+        <div class="text-end">
+            <h2>Solde : {{ user.euros }} €</h2>
+        </div>
+    </div>
 
-      <div>
-      <h2>Add Cryptocurrency</h2>
-      {{ form_start(form) }}
-        {{ form_row(form.crypto) }}
-        {{ form_row(form.quantity) }}
-      {{ form_end(form) }}
-      </div>
+    <div class="d-flex flex-row justify-content-between">
+        <div class="p-4 bg-light shadow-sm rounded-4 me-3 w-50">
+            <h2 class="mb-3">Buy Cryptocurrency</h2>
+            {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_row(form.crypto) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.quantity) }}
+                </div>
+            {{ form_end(form) }}
+        </div>
 
-      <div>
-        <h2>Sell Cryptocurrency</h2>
-        {{ form_start(sellForm) }}
-          {{ form_row(sellForm.crypto) }}
-          {{ form_row(sellForm.quantity) }}
-        {{ form_end(sellForm) }}
-      </div>
+        <div class="p-4 bg-light shadow-sm rounded-4 w-50">
+            <h2 class="mb-3">Sell Cryptocurrency</h2>
+            <div class="d-flex flex-column">
+                {{ form_start(sellForm) }}
+                    <div class="mb-3">
+                        {{ form_row(sellForm.crypto) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(sellForm.quantity) }}
+                    </div>
+                {{ form_end(sellForm) }}
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
       <!-- Display flash messages -->

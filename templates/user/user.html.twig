@@ -41,30 +41,12 @@
     <div class="bento-box-1">
       Activity <span class="vertical-divider"></span>
     </div>
+    <h2>Solde : {{ currentUser.euros }}</h2>
     <h3 class="margin-bottom: 20px">Popular cryptocurrencies</h3>
     <div class="embed-responsive embed-responsive-16by9">
       <!-- TradingView Widget BEGIN -->
       <div class="tradingview-widget-container">
         <div id="tradingview_12345"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-        <script type="text/javascript">
-        new TradingView.widget(
-        {
-          "autosize": true,
-          
-          "symbol": "BINANCE:BTCEUR",
-          "interval": "H",
-          "timezone": "Europe/Paris",
-          "theme": "light",
-          "style": "1",
-          "locale": "fr",
-          "toolbar_bg": "#f1f3f6",
-          "enable_publishing": false,
-          "allow_symbol_change": true,
-          "container_id": "tradingview_12345"
-        }
-        );
-      </script>
       </div>
       <!-- TradingView Widget END -->  
     </div>
@@ -77,4 +59,41 @@
 </div>
 </div>
 
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script type="text/javascript">
+  function initTradingViewWidget() {
+    new TradingView.widget({
+      "autosize": true,
+      "symbol": "BINANCE:BTCEUR",
+      "interval": "H",
+      "timezone": "Europe/Paris",
+      "theme": "light",
+      "style": "1",
+      "locale": "fr",
+      "toolbar_bg": "#f1f3f6",
+      "enable_publishing": false,
+      "allow_symbol_change": true,
+      "container_id": "tradingview_12345"
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('tradingview_12345')) {
+      initTradingViewWidget();
+    }
+  });
+
+  document.querySelectorAll('.submenu-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      setTimeout(function() {
+        if (document.getElementById('tradingview_12345')) {
+          initTradingViewWidget();
+        }
+      }, 500); // Adjust delay as needed
+    });
+  });
+</script>
 {% endblock %}
