@@ -33,13 +33,15 @@ class CryptoAmountType extends AbstractType
                 'placeholder' => 'Select a cryptocurrency',
                 'required' => true,
                 'mapped' => false, // This field is not directly mapped to an entity property
+                'attr' => ['class' => 'form-select'],
             ])
             ->add('quantity', NumberType::class, [
                 'label' => 'Quantity :',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Buy',
-                'attr' => ['class' => 'btn btn-primary'],
+                'attr' => ['class' => 'button-primary'],
             ]);
 
             // Add event listener to handle form submission

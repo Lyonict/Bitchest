@@ -33,13 +33,15 @@ class CryptoSellType extends AbstractType
                 'placeholder' => 'Select a cryptocurrency',
                 'required' => true,
                 'mapped' => false,
+                'attr' => ['class' => 'form-select'],
             ])
             ->add('quantity', NumberType::class, [
                 'label' => 'Quantity',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('sell', SubmitType::class, [
                 'label' => 'Sell',
-                'attr' => ['class' => 'btn btn-danger'],
+                'attr' => ['class' => 'button-primary'],
             ]);
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {

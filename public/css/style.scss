@@ -202,3 +202,19 @@ h3 {
   left: 0;
 }
 
+.primary-border{
+  border: 2px solid #35a7ff;
+}
+
+.primary-background{
+  background: #35a7ff;
+  color: white;
+}
+
+.button-primary{
+  background: #35a7ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+}
