@@ -38,11 +38,20 @@
     </table>
   </div>
   <div class="right-column bg-light col-10 d-flex flex-column justify-content-start" style="overflow-y: scroll"> 
-    <div class="bento-box-1">
-      Activity <span class="vertical-divider"></span>
+    <div class="d-flex flex-row mb-3 justify-content-between">
+      <div class="bento-box" style="width: 70%;">
+        Activity <span class="vertical-divider"></span>
+        <!-- <div class=""></div> Last Transactions here-->
+      </div>
+      <div class="primary-background bento-box">
+        <span class="fs-4">Solde : {{ currentUser.euros }}</span>
+      </div>
     </div>
-    <h2>Solde : {{ currentUser.euros }}</h2>
-    <h3 class="margin-bottom: 20px">Popular cryptocurrencies</h3>
+
+    <hr>
+
+    <h3 class="mb-3">Live Crypto Values</h3>
+
     <div class="embed-responsive embed-responsive-16by9">
       <!-- TradingView Widget BEGIN -->
       <div class="tradingview-widget-container">
