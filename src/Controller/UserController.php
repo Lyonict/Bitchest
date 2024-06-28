@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Wallet;
 use App\Form\CryptoAmountType;
 use App\Form\CryptoSellType;
+use App\Form\ChangePasswordType;
 use App\Repository\UserRepository;
 use App\Repository\WalletRepository;
 use App\Repository\TransactionRepository;
@@ -18,6 +19,11 @@ use App\Service\CryptoService;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\Entity\Transaction;
 use DateTime;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+
+
 
 class UserController extends AbstractController
 {
@@ -55,14 +61,13 @@ class UserController extends AbstractController
 
         // Fetch current user
         $currentUser = $this->getUser();
-        dump($currentUser);
 
         if (!$currentUser) {
             throw $this->createAccessDeniedException('User not authenticated.');
         }
 
+        /** @var User $currentUser */
         $id = $currentUser->getId();
-        dump($id);
         $session->set('walletUserId', $id); // Set in session if needed
 
         $user = $userRepository->find($id);
@@ -213,6 +218,58 @@ class UserController extends AbstractController
             'form' => $form->createView(),
             'sellForm' => $sellForm->createView(),
             'cryptoData' => $cryptoData,
+        ]);
+    }
+
+    #[Route('/user/account', name: 'account')]
+    public function account (Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    {
+        
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            throw $this->createAccessDeniedException('User not authenticated.');
+        }
+
+        $passwordform = $this->createForm(ChangePasswordType::class);
+        $passwordform->handleRequest($request);
+
+        if ($passwordform->isSubmitted() && $passwordform->isValid()) {
+            $oldPassword = $passwordform->get('oldPassword')->getData();
+            $newPassword = $passwordform->get('newPassword')->getData();
+            $confirmPassword = $passwordform->get('confirmPassword')->getData();
+
+            // Check if old password is correct
+            if (!$userPasswordHasher->isPasswordValid($currentUser, $oldPassword)) {
+                $this->addFlash('error', 'Current password is incorrect.');
+                return $this->redirectToRoute('account');
+            }
+
+            // Check if new password matches confirmation password
+            if ($newPassword !== $confirmPassword) {
+                $this->addFlash('error', 'New passwords do not match.');
+                return $this->redirectToRoute('account');
+            }
+
+            // Encode and set the new password
+            $currentUser->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $currentUser,
+                    $newPassword
+                )
+            );
+
+            $entityManager->persist($currentUser);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Password changed successfully.');
+
+            return $this->redirectToRoute('account');
+        }
+
+        return $this->render('user/account.html.twig', [
+            'currentUser' => $currentUser,
+            'passwordform' => $passwordform->createView(),
         ]);
     }
 }

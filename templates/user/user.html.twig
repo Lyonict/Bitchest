@@ -24,7 +24,7 @@
       <tr>
         <td class="submenu-item p-3">
           <img class="menu-icon" src="{{asset('img/account.svg')}}">
-          <a class="submenu-link" href="{{asset('')}}"><span> Account</span></a>
+          <a class="submenu-link" href="{{path('account')}}"><span> Account</span></a>
         </td>
       </tr>
       <tr>
@@ -68,7 +68,7 @@
         <!-- Transaction history end -->
       </div>
 
-      <div class="primary-background bento-box">
+      <div class="secondary-background bento-box">
         <span class="fs-4">Solde : {{ currentUser.euros }} €</span>
       </div>
     </div>

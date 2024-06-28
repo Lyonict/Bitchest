@@ -106,9 +106,8 @@ h3 {
 }
 
 .example-element {
-  width: 400px;
-  height: 400px;
-  background: coral;
+  width: 600px;
+  height: 350px;
 }
 
 .column {
@@ -205,7 +204,12 @@ h3 {
 }
 
 .primary-background{
-  background: #35a7ff;
+  background: #38618C;
+  color: white;
+}
+
+.secondary-background{
+  background: #ff5964;
   color: white;
 }
 
@@ -215,4 +219,19 @@ h3 {
   border: none;
   border-radius: 10px;
   padding: 10px 20px;
+}
+
+.button-outline-secondary{
+  background: none;
+  color: #ff5964;
+  border: 1px solid #ff5964;
+  border-radius: 10px;
+  padding: 10px 20px;
+  transition: 0.2s ease-in-out;
+}
+
+.button-outline-secondary:hover{
+  background: #ff5964;
+  color: white;
+  transition: 0.2s ease-in-out;
 }
