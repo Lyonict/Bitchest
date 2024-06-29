@@ -12066,7 +12066,6 @@ h3, .h3 {
   width: 100%;
   text-align: left;
   font-size: 22px;
-  font-weight: bolder;
 }
 
 .highlight {
@@ -12183,6 +12182,10 @@ h3, .h3 {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.primary-text {
+  color: #38618C;
 }
 
 .primary-border {
