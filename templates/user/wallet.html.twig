@@ -94,17 +94,47 @@
       </div>
       <hr>
 
+      <table class="table">
+          <thead>
+              <tr>
+                  <th scope="col">Cryptocurrency</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Current Price</th>
+                  <th scope="col">Total Value</th>
+                  <th scope="col">Total Cost</th>
+                  <th scope="col">Profit/Loss</th>
+              </tr>
+          </thead>
+          <tbody class="tbdody">
+              {% set cryptoIds = {
+                    1: 'btc',
+                    2: 'eth',
+                    3: 'xrp',
+                    4: 'xem',
+                    5: 'bch',
+                    6: 'ada',
+                    7: 'ltc',
+                    8: 'xlm',
+                    9: 'iota',
+                    10: 'dash'
+                  } %}
+              {% for wallet in wallets %}
+                  {% set alias = cryptoIds[wallet.cryptoId] %}
+                  {% set crypto = cryptoData[alias ~ 'usdt'] %}
+                  {% set profitLoss = wallet.calculateProfitLoss(crypto.price) %}
+                  <tr>
+                      <td>{{ crypto.alias }}</td>
+                      <td>{{ wallet.quantity }}</td>
+                      <td>{{ crypto.price }}</td>
+                      <td>{{ crypto.price * wallet.quantity }}</td>
+                      <td>{{ wallet.totalCost }}</td>
+                      <td>{{ profitLoss }}</td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+
       <h2>Wallet :</h2>
-      <ul>
-          {% for wallet in wallets %}
-              <li>
-                  Wallet ID: {{ wallet.user.id }},
-                  Crypto ID: {{ wallet.cryptoId }},
-                  Quantity: {{ wallet.quantity }},
-                  Total Cost: {{ wallet.totalCost }}
-              </li>
-          {% endfor %}
-      </ul>
 
       <div>
         <table class="table">

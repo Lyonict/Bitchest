@@ -92,71 +92,49 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         $sellForm->handleRequest($request);
 
+        //////////////
         if ($form->isSubmitted() && $form->isValid()) {
             $wallet->setUser($user);
             $selectedCrypto = $form->get('crypto')->getData();
             $quantity = $form->get('quantity')->getData();
-    
-            // Check if the cryptocurrency already exists in the user's wallet
+
             $existingWallet = $walletRepository->findOneBy([
                 'user' => $user,
                 'cryptoId' => $selectedCrypto->getCryptoId()
             ]);
-    
+
             if ($existingWallet) {
-                // Update existing wallet entry
                 $existingWallet->setQuantity($existingWallet->getQuantity() + $quantity);
                 $existingWallet->setTotalCost($existingWallet->getTotalCost() + ($quantity * $wallet->getTotalCost()));
-    
-                $entityManager->persist($existingWallet);
-                // Buying transaction
-                $transaction = new Transaction();
-                $transaction->setUser($user);
-                $transaction->setCryptocurrency($selectedCrypto);
-                $transaction->setTransactionType('buy');
-                $transaction->setQuantity($quantity);
-                // Set the date of the transaction to the current date and time
-                $now = new DateTime('now', new \DateTimeZone('Europe/Paris'));
-                $dateTimeString = $now->format('d-m-Y H:i');
-                $transaction->setDate(new DateTime($dateTimeString));
 
-                $entityManager->persist($transaction);
+                $entityManager->persist($existingWallet);
             } else {
-                // Create a new wallet entry
                 $wallet->setCryptoId($selectedCrypto->getCryptoId());
                 $wallet->setQuantity($quantity);
                 $wallet->setTotalCost($wallet->getTotalCost());
                 $entityManager->persist($wallet);
-
-                // Buying transaction
-                $transaction = new Transaction();
-                $transaction->setUser($user);
-                $transaction->setCryptocurrency($selectedCrypto);
-                $transaction->setTransactionType('buy');
-                $transaction->setQuantity($quantity);
-                // Set the date of the transaction to the current date and time
-                $now = new DateTime('now', new \DateTimeZone('Europe/Paris'));
-                $dateTimeString = $now->format('d-m-Y H:i');
-                $transaction->setDate(new DateTime($dateTimeString));
-
-                $entityManager->persist($transaction);
             }
-    
+
+            $transaction = new Transaction();
+            $transaction->setUser($user);
+            $transaction->setCryptocurrency($selectedCrypto);
+            $transaction->setTransactionType('buy');
+            $transaction->setQuantity($quantity);
+            $transaction->setDate(new DateTime('now', new \DateTimeZone('Europe/Paris')));
+
+            $entityManager->persist($transaction);
+
             $user->setEuros($user->getEuros() - $wallet->getTotalCost());
-    
+
             $entityManager->flush();
-    
+
             $this->addFlash('success', 'Crypto amount added successfully.');
             return $this->redirectToRoute('wallet', ['id' => $id]);
         }
-    
 
         if ($sellForm->isSubmitted() && $sellForm->isValid()) {
-            // Handle form submission for selling
             $wallet->setUser($user);
             $selectedCrypto = $sellForm->get('crypto')->getData();
-
-            // Find the existing wallet entry for the selected cryptocurrency
             $existingWallet = $walletRepository->findOneBy([
                 'user' => $user,
                 'cryptoId' => $wallet->getCryptoId()
@@ -167,32 +145,31 @@ class UserController extends AbstractController
                 $totalValue = $wallet->getTotalCost();
                 $currentQuantity = $existingWallet->getQuantity();
 
+                    // quantité qu'on souhaite vendre > quantité que l'on possède
                 if ($quantity > $currentQuantity) {
                     $this->addFlash('error', 'Insufficient crypto quantity to complete the transaction.');
-                    // Redirect to avoid resubmission
                     return $this->redirectToRoute('wallet', ['id' => $id]);
                 } else {
-                    // Deduct the quantity of crypto
-                    $existingWallet->setQuantity($currentQuantity - $quantity);
-
-                    // Add the total value to the user's euros
+                    
                     $user->setEuros($user->getEuros() + $totalValue);
 
-                    // Remove the wallet entry if the quantity is zero
+                    // Update TotalCost value after sale
+                    $existingWallet->updateTotalCostAfterSale($quantity);
+
+                    // Update Quantity value after sale
+                    $existingWallet->setQuantity($currentQuantity - $quantity);
+
+                    // Remove Wallet if quantity = 0
                     if ($existingWallet->getQuantity() == 0) {
                         $entityManager->remove($existingWallet);
                     }
 
-                    // Sell transaction
                     $transaction = new Transaction();
                     $transaction->setUser($user);
                     $transaction->setCryptocurrency($selectedCrypto);
                     $transaction->setTransactionType('sell');
                     $transaction->setQuantity($quantity);
-                    // Set the date of the transaction to the current date and time
-                    $now = new DateTime('now', new \DateTimeZone('Europe/Paris'));
-                    $dateTimeString = $now->format('d-m-Y H:i');
-                    $transaction->setDate(new DateTime($dateTimeString));
+                    $transaction->setDate(new DateTime('now', new \DateTimeZone('Europe/Paris')));
 
                     $entityManager->persist($transaction);
 
@@ -200,12 +177,10 @@ class UserController extends AbstractController
 
                     $this->addFlash('success', 'Crypto amount sold successfully.');
 
-                    // Redirect to avoid resubmission
                     return $this->redirectToRoute('wallet', ['id' => $id]);
                 }
             } else {
                 $this->addFlash('error', 'No cryptocurrency found to sell.');
-                // Redirect to avoid resubmission
                 return $this->redirectToRoute('wallet', ['id' => $id]);
             }
         }

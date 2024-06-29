@@ -79,4 +79,24 @@ class Wallet
 
         return $this;
     }
+
+    public function calculateProfitLoss(float $currentPrice): float
+    {
+        $currentValue = $this->quantity * $currentPrice;
+        if ($currentValue - $this->totalCost === (-5.5511151231258E-17)){
+            return 0;
+        }
+        else {
+            return $currentValue - $this->totalCost;
+        }    
+    }
+
+    public function updateTotalCostAfterSale(float $quantitySold): void
+    {
+        if ($this->quantity > 0) {
+            $sub = ($this->quantity - $quantitySold) / $this->quantity;
+            
+            $this->totalCost = $this->totalCost * $sub;
+        }
+    }
 }
