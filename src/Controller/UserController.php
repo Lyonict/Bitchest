@@ -30,11 +30,11 @@ class UserController extends AbstractController
     #[Route('/user', name: 'user')]
     public function index(UserRepository $repository, TransactionRepository $transactionRepository): Response
     {
-        // Récupérer l'utilisateur connecté
+        // Retrieve the logged-in user
         $currentUser = $this->getUser();
 
         if (!$currentUser) {
-            // Gérer le cas où l'utilisateur n'est pas connecté
+            // Handle the case where the user is not logged in
             throw $this->createAccessDeniedException('User not authenticated.');
         }
 
@@ -73,9 +73,9 @@ class UserController extends AbstractController
         $user = $userRepository->find($id);
 
         if (!$user) {
-            // Gérer le cas où l'utilisateur n'est pas trouvé
+            // Handle the case where the user is not found
             $this->addFlash('error', 'User not found.');
-            return $this->redirectToRoute('user'); // Rediriger ou gérer comme approprié
+            return $this->redirectToRoute('user');
         }
 
         // Fetch wallets for the user
@@ -84,7 +84,7 @@ class UserController extends AbstractController
         // Get crypto data using CryptoService
         $cryptoData = $cryptoService->getCryptoData($wallets, $currentUser);
 
-        // Create form for adding crypto amount
+        // Create form for buying and selling crypto
         $wallet = new Wallet();
         $form = $this->createForm(CryptoAmountType::class, $wallet);
         $sellForm = $this->createForm(CryptoSellType::class, $wallet);
@@ -92,7 +92,6 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         $sellForm->handleRequest($request);
 
-        //////////////
         if ($form->isSubmitted() && $form->isValid()) {
             $wallet->setUser($user);
             $selectedCrypto = $form->get('crypto')->getData();
@@ -145,7 +144,7 @@ class UserController extends AbstractController
                 $totalValue = $wallet->getTotalCost();
                 $currentQuantity = $existingWallet->getQuantity();
 
-                    // quantité qu'on souhaite vendre > quantité que l'on possède
+                    // Quantity we want to sell > Quantity we have
                 if ($quantity > $currentQuantity) {
                     $this->addFlash('error', 'Insufficient crypto quantity to complete the transaction.');
                     return $this->redirectToRoute('wallet');
