@@ -26,7 +26,7 @@
         <div class="mb-3">
           <label for="inputPassword">Password</label>
           <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-          <a href="#">Forgot your password ?</a>
+          <!-- <a href="#">Forgot your password ?</a> -->
         </div>
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
@@ -39,11 +39,11 @@
           Sign in
         </button>
 
-        <div class="mt-4">
+        <!-- <div class="mt-4">
           <p class="m-0">Not yet registered ?
             <a href="{{path('app_register')}}">Register here</a>
           </p>
-        </div>
+        </div> -->
       {% endif %}
     </form>
   </div>

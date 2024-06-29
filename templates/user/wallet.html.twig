@@ -14,7 +14,6 @@
         </td>
       </tr>
       {% if is_granted('ROLE_ADMIN') %}
-      {# Afficher l'élément HTML si l'utilisateur a le rôle ROLE_ADMIN #}
       <tr>
         <td class="submenu-item p-3">
           <img class="menu-icon" src="{{asset('img/admin.svg')}}">
@@ -49,7 +48,7 @@
             <span class="fs-5"><strong>User account :</strong> {{ user.email }}</span>
           </div>
           <div class="mb-4 rounded-4 p-4 secondary-background bento-box">
-            <span class="fs-4">Solde : {{ user.euros }} €</span>
+            <span class="fs-4">Solde : {{ user.euros }} $</span>
           </div>
         </div>
 
@@ -94,18 +93,22 @@
       </div>
       <hr>
 
-      <table class="table">
+      <h2>Your Wallet :</h2>
+
+      <div class="primary-border rounded-3 mb-3" style="background: white;">
+      <table class="table mt-1">
           <thead>
               <tr>
-                  <th scope="col">Cryptocurrency</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Current Price</th>
-                  <th scope="col">Total Value</th>
-                  <th scope="col">Total Cost</th>
-                  <th scope="col">Profit/Loss</th>
+                  <th class="p-3" scope="col">Cryptocurrency</th>
+                  <th class="p-3" scope="col">Quantity</th>
+                  <th class="p-3" scope="col">Current Price</th>
+                  <th class="p-3" scope="col">Total Value</th>
+                  <th class="p-3" scope="col">Total Cost</th>
+                  <th class="p-3" scope="col">Profit/Loss</th>
               </tr>
           </thead>
-          <tbody class="tbdody">
+          <tbody class="tbody table-group-divider">
+              {% set alias = '' %}
               {% set cryptoIds = {
                     1: 'btc',
                     2: 'eth',
@@ -123,18 +126,19 @@
                   {% set crypto = cryptoData[alias ~ 'usdt'] %}
                   {% set profitLoss = wallet.calculateProfitLoss(crypto.price) %}
                   <tr>
-                      <td>{{ crypto.alias }}</td>
-                      <td>{{ wallet.quantity }}</td>
-                      <td>{{ crypto.price }}</td>
-                      <td>{{ crypto.price * wallet.quantity }}</td>
-                      <td>{{ wallet.totalCost }}</td>
-                      <td>{{ profitLoss }}</td>
+                      <td class="p-3">{{ crypto.alias }}</td>
+                      <td class="p-3">{{ wallet.quantity }}</td>
+                      <td class="p-3">{{ crypto.price }} $</td>
+                      <td class="p-3">{{ crypto.price * wallet.quantity }} $</td>
+                      <td class="p-3">{{ wallet.totalCost }} $</td>
+                      <td class="p-3">{{ profitLoss }} $</td>
                   </tr>
               {% endfor %}
           </tbody>
       </table>
+      </div>
 
-      <h2>Wallet :</h2>
+      <h2>Cryptocurrencies :</h2>
 
       <div>
         <table class="table">
@@ -144,15 +148,17 @@
                 <th scope="col">Quantity</th>
                 <th scope="col">Last price</th>
                 <th scope="col">var % 24h</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody class="tbody">
               {% for symbol, data in cryptoData %}
-                <tr data-crypto="{{ symbol }}">
-                  <td>{{ data.alias }}</td>
-                  <td>{{ data.quantity }}</td>
-                  <td class="price">{{ data.price }} $</td>
-                  <td class="change-percent">{{ data.changePercent }}%</td>
+                <tr data-crypto="{{ symbol }}" style="cursor: pointer;">
+                  <td class="align-middle">{{ data.alias }}</td>
+                  <td class="align-middle">{{ data.quantity }}</td>
+                  <td class="price align-middle">{{ data.price }} $</td>
+                  <td class="change-percent align-middle">{{ data.changePercent }}%</td>
+                  <td><a class="text-decoration-none fs-3 align-middle" href="{{ path('crypto_detail', { 'symbol': symbol }) }}">-></a></td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -169,3 +175,5 @@
 </div>
 </div>
 {% endblock %}
+
+

@@ -129,7 +129,7 @@ class UserController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Crypto amount added successfully.');
-            return $this->redirectToRoute('wallet', ['id' => $id]);
+            return $this->redirectToRoute('wallet');
         }
 
         if ($sellForm->isSubmitted() && $sellForm->isValid()) {
@@ -148,7 +148,7 @@ class UserController extends AbstractController
                     // quantité qu'on souhaite vendre > quantité que l'on possède
                 if ($quantity > $currentQuantity) {
                     $this->addFlash('error', 'Insufficient crypto quantity to complete the transaction.');
-                    return $this->redirectToRoute('wallet', ['id' => $id]);
+                    return $this->redirectToRoute('wallet');
                 } else {
                     
                     $user->setEuros($user->getEuros() + $totalValue);
@@ -177,11 +177,11 @@ class UserController extends AbstractController
 
                     $this->addFlash('success', 'Crypto amount sold successfully.');
 
-                    return $this->redirectToRoute('wallet', ['id' => $id]);
+                    return $this->redirectToRoute('wallet');
                 }
             } else {
                 $this->addFlash('error', 'No cryptocurrency found to sell.');
-                return $this->redirectToRoute('wallet', ['id' => $id]);
+                return $this->redirectToRoute('wallet');
             }
         }
 
@@ -245,6 +245,40 @@ class UserController extends AbstractController
         return $this->render('user/account.html.twig', [
             'currentUser' => $currentUser,
             'passwordform' => $passwordform->createView(),
+        ]);
+    }
+
+    #[Route('/user/wallet/{symbol}', name: 'crypto_detail')]
+    public function cryptoDetail(string $symbol, CryptoService $cryptoService, WalletRepository $walletRepository, UserRepository $userRepository): Response
+    {
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            throw $this->createAccessDeniedException('User not authenticated.');
+        }
+
+        /** @var User $currentUser */
+        $id = $currentUser->getId();
+        $user = $userRepository->find($id);
+        // Fetch wallets for the user
+        $wallets = $walletRepository->findBy(['user' => $user]);
+
+        // Get crypto data using CryptoService
+        $cryptoData = $cryptoService->getCryptoData($wallets, $currentUser);
+        
+        // Get crypto name using symbols in CryptoService
+        $cryptoName = $cryptoService->getCryptoNameBySymbol($symbol);
+
+        // Get crypto info using CryptoService
+        $cryptoInfo = $cryptoService->getCryptoPrice($symbol);
+
+        return $this->render('user/crypto_detail.html.twig', [
+            'crypto' => $cryptoInfo,
+            'symbol' => $symbol,
+            'cryptoName' => $cryptoName,
+            'wallets' => $wallets,
+            'currentUser' => $currentUser,
+            'cryptoData' => $cryptoData,
         ]);
     }
 }

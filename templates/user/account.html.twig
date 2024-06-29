@@ -44,13 +44,16 @@
         <strong>Email : </strong> {{ currentUser.email }}
       </div>
       <div class="mb-3">
-        <strong>Euros : </strong> {{ currentUser.euros }} €
+        <strong>Euros : </strong> {{ currentUser.euros }} $
       </div>
       <div class="mb-3">
         <strong>Password : </strong> 
         <button class="button-outline-secondary d-inline-flex align-items-center" id="change-password-link">
         Change Password
         </button>
+      </div>
+      <div class="mb-3">
+        <a href="{{ path('app_logout') }}">Logout</a>
       </div>
     </div>
     <hr>

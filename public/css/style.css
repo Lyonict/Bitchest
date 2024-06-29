@@ -12199,6 +12199,11 @@ h3, .h3 {
   color: white;
 }
 
+.tertiary-background {
+  background: #01FF19;
+  color: white;
+}
+
 .button-primary {
   background: #35a7ff;
   color: white;

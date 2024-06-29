@@ -57,7 +57,11 @@ class CryptoService
                 'alias' => $alias,
                 'price' => $data['lastPrice'],
                 'changePercent' => $data['priceChangePercent'],
-                'quantity' => $quantity
+                'openPrice' => $data['openPrice'],
+                'highPrice' => $data['highPrice'],
+                'lowPrice' => $data['lowPrice'],
+                'volume' => $data['volume'],
+                'quantity' => $quantity,
             ];
         }
 
@@ -73,4 +77,23 @@ class CryptoService
         
         return $response->toArray();
     }
+
+    public function getCryptoNameBySymbol(string $symbol): ?string
+    {
+        $cryptoNames = [
+            'btcusdt' => 'Bitcoin',
+            'ethusdt' => 'Ethereum',
+            'xrpusdt' => 'Ripple',
+            'xemusdt' => 'NEM',
+            'bchusdt' => 'Bitcoin Cash',
+            'adausdt' => 'Cardano',
+            'ltcusdt' => 'Litecoin',
+            'xlmusdt' => 'Stellar',
+            'iotausdt' => 'IOTA',
+            'dashusdt' => 'Dash'
+        ];
+
+        return $cryptoNames[$symbol] ?? null;
+    }
 }
+

@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Crypto Detail{% endblock %}
+
+{% block content %}
+<div class="connected-interface d-flex" style="height: 100vh;">
+  <div class="submenu col-2">
+    <!-- Left column content -->
+    <table class="w-100">
+      <tr>
+        <td class="submenu-item p-3">
+          <img class="menu-icon" src="{{asset('img/home.svg')}}">
+          <a class="submenu-link" href="{{asset('user')}}"><span> Hub</span></a>
+        </td>
+      </tr>
+      {% if is_granted('ROLE_ADMIN') %}
+      <tr>
+        <td class="submenu-item p-3">
+          <img class="menu-icon" src="{{asset('img/admin.svg')}}">
+          <a class="submenu-link" href="{{asset('admin')}}"><span> Administration</span></a>
+        </td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td class="submenu-item p-3">
+          <img class="menu-icon" src="{{asset('img/account.svg')}}">
+          <a class="submenu-link" href="{{path('account')}}"><span> Account</span></a>
+        </td>
+      </tr>
+      <tr>
+        <td class="submenu-item p-3">
+          <img class="menu-icon" src="{{asset('img/wallet.svg')}}"> 
+          <a class="submenu-link" href="{{ path('wallet') }}">
+            <span> Wallet</span>
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="right-column bg-light col-10 d-flex flex-column justify-content-start" style="overflow-y: scroll"> 
+
+    <div class="embed-responsive embed-responsive-16by9">
+    <div class="d-flex flex-row">
+        <h1>Details for {{ cryptoName }}</h1><span>({{ symbol }})</span>
+    </div>
+    <hr>
+    <!-- TradingView Widget BEGIN -->
+    <div class="tradingview-widget-container">
+        <div id="tradingview_12345"></div>
+    </div>
+    <!-- TradingView Widget END -->  
+    <hr>
+
+    <div class="d-flex flex-row justify-content-between">
+        <div class="mb-4 rounded-4 p-4 primary-background bento-box">
+            <span class="fs-5">Current Price : {{ crypto.lastPrice }} $</span>
+        </div>
+        {% if '-' in crypto.priceChangePercent%}
+            <div class="mb-4 rounded-4 p-4 secondary-background bento-box">
+                <span class="fs-5">24h Change : {{ crypto.priceChangePercent }}%</span>
+            </div>
+        {% else %}
+            <div class="mb-4 rounded-4 p-4 tertiary-background bento-box">
+                <span class="fs-5">24h Change : {{ crypto.priceChangePercent }}%</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="d-flex flex-row justify-content-between">
+        <div class="mb-4 rounded-4 p-4 primary-background">
+            <span class="fs-6">24h Open Price : {{ crypto.openPrice }} $</span>
+        </div>
+        <div class="mb-4 rounded-4 p-4 primary-background">
+            <span class="fs-6">24h Low Price : {{ crypto.lowPrice }} $</span>
+        </div>
+        <div class="mb-4 rounded-4 p-4 primary-background">
+            <span class="fs-6">24h High Price : {{ crypto.highPrice }} $</span>
+        </div>
+    </div>
+
+    <hr>
+    <h2>Wallet :</h2>
+    
+    <table class="table">
+        <tbody class="tbdody">
+            {% set alias = '' %}
+             {% set cryptoIds = {
+                1: 'btc',
+                2: 'eth',
+                3: 'xrp',
+                4: 'xem',
+                5: 'bch',
+                6: 'ada',
+                7: 'ltc',
+                8: 'xlm',
+                9: 'iota',
+                10: 'dash'
+                } %}
+            {% for wallet in wallets %}
+                {% set alias = cryptoIds[wallet.cryptoId] %}
+                {% set crypto = cryptoData[alias ~ 'usdt'] %}
+                {% set profitLoss = wallet.calculateProfitLoss(crypto.price) %}
+                
+                {% if cryptoName == crypto.alias %}
+                <div class="d-flex flex-row justify-content-between">
+                    <div class="mb-4 rounded-4 p-3 primary-background">
+                        <span class="fs-6">Quantity : {{ wallet.quantity }}</span>
+                    </div>
+                    <div class="mb-4 rounded-4 p-3 primary-background">
+                        <span class="fs-6">Value of your wallet : {{ crypto.price * wallet.quantity }} $</span>
+                    </div>
+                    <div class="mb-4 rounded-4 p-3 primary-background">
+                        <span class="fs-6">Cost of your wallet : {{ wallet.totalCost }} $</span>
+                    </div>
+                    {% if profitLoss < 0 %}
+                        <div class="mb-4 rounded-4 p-3 secondary-background">
+                            <span class="fs-6">Potential Profit/Loss : {{ profitLoss }} $</span>
+                        </div>
+                    {% else %}
+                        <div class="mb-4 rounded-4 p-3 tertiary-background">
+                            <span class="fs-6">Potential Profit/Loss : {{ profitLoss }} $</span>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+            {% endfor %}
+        </tbody>
+    </table>
+    
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script type="text/javascript">
+  function initTradingViewWidget() {
+    new TradingView.widget({
+      "autosize": true,
+      "symbol": "BINANCE:{{ symbol }}",
+      "interval": "H",
+      "timezone": "Europe/Paris",
+      "theme": "light",
+      "style": "1",
+      "locale": "fr",
+      "toolbar_bg": "#f1f3f6",
+      "enable_publishing": false,
+      "allow_symbol_change": true,
+      "container_id": "tradingview_12345"
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('tradingview_12345')) {
+      initTradingViewWidget();
+    }
+  });
+
+  document.querySelectorAll('.submenu-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      setTimeout(function() {
+        if (document.getElementById('tradingview_12345')) {
+          initTradingViewWidget();
+        }
+      }, 500); // Adjust delay as needed
+    });
+  });
+</script>
+{% endblock %}

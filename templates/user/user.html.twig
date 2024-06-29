@@ -13,7 +13,6 @@
         </td>
       </tr>
       {% if is_granted('ROLE_ADMIN') %}
-      {# Afficher l'élément HTML si l'utilisateur a le rôle ROLE_ADMIN #}
       <tr>
         <td class="submenu-item p-3">
           <img class="menu-icon" src="{{asset('img/admin.svg')}}">
@@ -69,7 +68,7 @@
       </div>
 
       <div class="secondary-background bento-box">
-        <span class="fs-4">Solde : {{ currentUser.euros }} €</span>
+        <span class="fs-4">Solde : {{ currentUser.euros }} $</span>
       </div>
     </div>
 
@@ -102,7 +101,7 @@
   function initTradingViewWidget() {
     new TradingView.widget({
       "autosize": true,
-      "symbol": "BINANCE:BTCEUR",
+      "symbol": "BINANCE:BTCUSDT",
       "interval": "H",
       "timezone": "Europe/Paris",
       "theme": "light",
