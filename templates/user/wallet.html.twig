@@ -153,12 +153,18 @@
             </thead>
             <tbody class="tbody">
               {% for symbol, data in cryptoData %}
-                <tr data-crypto="{{ symbol }}" style="cursor: pointer;">
+                <tr data-crypto="{{ symbol }}">
                   <td class="align-middle">{{ data.alias }}</td>
                   <td class="align-middle">{{ data.quantity }}</td>
                   <td class="price align-middle">{{ data.price }} $</td>
                   <td class="change-percent align-middle">{{ data.changePercent }}%</td>
-                  <td><a class="text-decoration-none fs-3 align-middle" href="{{ path('crypto_detail', { 'symbol': symbol }) }}">-></a></td>
+                  <td>
+                      <div class="py-2">
+                      <a class="text-decoration-none" href="{{ path('crypto_detail', { 'symbol': symbol }) }}">
+                        <img src="{{ asset('img/arrow-right.svg') }}" alt="arrow-button" class="icon" width="30px">
+                      </a>
+                      </div>
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>

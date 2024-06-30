@@ -83,11 +83,13 @@ class Wallet
     public function calculateProfitLoss(float $currentPrice): float
     {
         $currentValue = $this->quantity * $currentPrice;
-        if ($currentValue - $this->totalCost === (-5.5511151231258E-17)){
+        $epsilon = 0.0000000001; // tolérance pour la comparaison des flottants
+
+        if (abs($currentValue - $this->totalCost) < $epsilon){
             return 0;
         }
         else {
-            return $currentValue - $this->totalCost;
+            return round($currentValue - $this->totalCost, 10);
         }    
     }
 
