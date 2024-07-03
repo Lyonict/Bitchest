@@ -97,6 +97,20 @@ class UserController extends AbstractController
             $selectedCrypto = $form->get('crypto')->getData();
             $quantity = $form->get('quantity')->getData();
 
+            // Check for negative quantity
+            if ($quantity <= 0) {
+                $this->addFlash('error', 'The quantity of cryptocurrency to buy must be positive.');
+                return $this->redirectToRoute('wallet');
+            }
+
+            $totalCost = $wallet->getTotalCost();
+
+            // Check if the user has enough euros
+            if ($user->getEuros() < $totalCost) {
+                $this->addFlash('error', 'You do not have enough dollars to complete this purchase.');
+                return $this->redirectToRoute('wallet');
+            }
+
             $existingWallet = $walletRepository->findOneBy([
                 'user' => $user,
                 'cryptoId' => $selectedCrypto->getCryptoId()
@@ -134,6 +148,15 @@ class UserController extends AbstractController
         if ($sellForm->isSubmitted() && $sellForm->isValid()) {
             $wallet->setUser($user);
             $selectedCrypto = $sellForm->get('crypto')->getData();
+
+            $quantity = $sellForm->get('quantity')->getData();
+
+            // Check for negative quantity
+            if ($quantity <= 0) {
+                $this->addFlash('error', 'The quantity of cryptocurrency to sell must be positive.');
+                return $this->redirectToRoute('wallet');
+            }
+
             $existingWallet = $walletRepository->findOneBy([
                 'user' => $user,
                 'cryptoId' => $wallet->getCryptoId()
